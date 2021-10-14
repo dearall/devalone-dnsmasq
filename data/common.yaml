@@ -1,0 +1,8 @@
+---
+dnsmasq::configs_hash = {}
+dnsmasq::hosts_hash = {}
+dnsmasq::dhcp_hosts_hash = {}
+dnsmasq::package_manage = true
+dnsmasq::package_ensure = installed
+dnsmasq::service_control = true
+dnsmasq::purge_config_dir = false
