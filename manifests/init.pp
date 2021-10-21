@@ -39,5 +39,7 @@ class dnsmasq (
   dnsmasq::conf { 'dns-server':
     ensure => 'present',
     prio   => 10,
+    # port   => '5353',
+    # source => 'puppet:///modules/dnsmasq/dnsmasq.conf'
   }
 }

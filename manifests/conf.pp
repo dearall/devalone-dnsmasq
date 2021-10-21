@@ -5,22 +5,34 @@
 # @example
 #   dnsmasq::conf { 'namevar': }
 define dnsmasq::conf (
-  String[1] $ensure,
-  Integer $prio,
-  Stromg[1] $source,
-  String[1] $content = template('dnsmasq/dnsmasq.conf.erb'),
+  $ensure   = 'present',
+  $prio     = 10,
+  $source   = undef,
 
   # conf params
-  String[2] $port = undef,
+  $port     = undef,
+
 ) {
+
   include ::dnsmasq
 
-  file { "${dnsmasq::params::config_dir}${prio}-${name}.conf":
-    ensure  => $ensure,
-    owner   => 'root',
-    group   => 'root',
-    source  => $source,
-    content => $content,
-    notify  => Class['dnsmasq::service'],
+  File {
+    owner => 'root',
+    group => 'root',
+  }
+
+  if $source {
+    file { "${dnsmasq::params::config_dir}${prio}-${name}.conf":
+      ensure => $ensure,
+      source => $source,
+      notify => Class['dnsmasq::service'],
+    }
+  }
+  else {
+    file { "${dnsmasq::params::config_dir}${prio}-${name}.conf":
+      ensure  => $ensure,
+      content => template('dnsmasq/dnsmasq.conf.erb'),
+      notify  => Class['dnsmasq::service'],
+    }
   }
 }

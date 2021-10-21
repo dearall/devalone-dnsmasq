@@ -11,7 +11,7 @@
 # leaving only DHCP and/or TFTP.
 <% if @port then -%>
 port=<%= @port %>
-<% else %>
+<%- else -%>
 #port=5353
 <%- end -%>
 
