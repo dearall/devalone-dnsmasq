@@ -5,9 +5,9 @@
 # @example
 #   include dnsmasq
 class dnsmasq (
-  Hash $configs_hash,
-  Hash $hosts_hash,
-  Hash $dhcp_hosts_hash,
+  # Hash $configs_hash,
+  # Hash $hosts_hash,
+  # Hash $dhcp_hosts_hash,
   String[1] $package_ensure,
   Boolean $package_manage,
   Boolean $service_control,
