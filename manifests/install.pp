@@ -5,7 +5,7 @@
 # @example
 #   include dnsmasq::install
 class dnsmasq::install {
-  if $ntp::package_manage {
+  if $dnsmasq::package_manage {
       package { $dnsmasq::params::package_name:
       ensure => $dnsmasq::package_ensure,
     }

@@ -8,7 +8,7 @@ class dnsmasq (
   Hash $configs_hash,
   Hash $hosts_hash,
   Hash $dhcp_hosts_hash,
-  String $package_ensure,
+  String[1] $package_ensure,
   Boolean $package_manage,
   Boolean $service_control,
   Boolean $purge_config_dir
@@ -32,7 +32,12 @@ class dnsmasq (
     File_line <<| tag == 'dnsmasq-host' |>>
   }
 
-  create_resources(dnsmasq::conf, $configs_hash)
-  create_resources(dnsmasq::host, $hosts_hash)
-  create_resources(dnsmasq::dhcp_host, $dhcp_hosts_hash)
+  # create_resources(dnsmasq::conf, $configs_hash)
+  # create_resources(dnsmasq::host, $hosts_hash)
+  # create_resources(dnsmasq::dhcp_host, $dhcp_hosts_hash)
+
+  dnsmasq::conf { 'dns-server':
+    ensure => 'present',
+    prio   => 10,
+  }
 }

@@ -1,8 +1,14 @@
 ---
-dnsmasq::configs_hash = {}
-dnsmasq::hosts_hash = {}
-dnsmasq::dhcp_hosts_hash = {}
-dnsmasq::package_manage = true
-dnsmasq::package_ensure = installed
-dnsmasq::service_control = true
-dnsmasq::purge_config_dir = false
+dnsmasq::configs_hash: ~
+dnsmasq::hosts_hash: ~
+dnsmasq::dhcp_hosts_hash: ~
+dnsmasq::package_manage: true
+dnsmasq::package_ensure: installed
+dnsmasq::service_control: true
+dnsmasq::purge_config_dir: false
+
+# dnsmasq::conf default parameters
+dnsmasq::conf::ensure: present
+dnsmasq::conf::prio: 10
+dnsmasq::conf::source: ~
+dnsmasq::conf::content: template('dnsmasq/dnsmasq.conf.erb')
