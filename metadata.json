@@ -4,7 +4,8 @@
   "author": "devalone",
   "summary": "Installs, configures, and manages the dnsmasq service.",
   "license": "Apache-2.0",
-  "source": "https://github.com/devalone/devalone-dnsmasq",
+  "source": "https://github.com/dearall/devalone-dnsmasq.git",
+  "project_page": "https://github.com/devalone/devalone-dnsmasq",
   "dependencies": [
 
   ],
@@ -56,5 +57,8 @@
   "pdk-version": "2.2.0",
   "template-url": "pdk-default#2.2.0",
   "template-ref": "tags/2.2.0-0-g2381db6",
-  "tags":["dnsmasq", "dns"]
+  "tags": [
+    "dnsmasq",
+    "dns"
+  ]
 }

@@ -14,7 +14,7 @@
 /Gemfile.lock
 /junit/
 /log/
-/pkg/
+#/pkg/
 /spec/fixtures/manifests/
 /spec/fixtures/modules/
 /tmp/
