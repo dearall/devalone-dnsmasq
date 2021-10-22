@@ -40,6 +40,18 @@
 #
 #   Default value: undef
 #
+# @param user
+#   Specify the userid  to which dnsmasq will change after startup. Dnsmasq must normally be started as root, 
+#   but it will drop root privileges after startup by changing id to another user. Normally this user is "dnsmasq"
+#   but that can be over-ridden with this switch.
+#
+#   Default value: undef
+#
+# @param group
+#   Specify the group which dnsmasq will run as. The default is "dnsmasq".
+#
+#   Default value: undef
+#
 # @param domain_needed
 #   Never forward plain names (without a dot or domain part)
 #
@@ -106,6 +118,8 @@
 #
 #
 #
+#
+#
 define dnsmasq::conf (
   Enum['present','file','absent'] $ensure               = 'present',
   Integer                         $priority             = 10,
@@ -113,6 +127,8 @@ define dnsmasq::conf (
 
   # conf params
   Optional[String[1]]             $port                  = undef,
+  Optional[String[1]]             $user                  = undef,
+  Optional[String[1]]             $group                 = undef,
   Boolean                         $domain_needed         = true,
   Boolean                         $bogus_priv            = true,
   Boolean                         $dnssec                = false,
@@ -122,6 +138,17 @@ define dnsmasq::conf (
   Boolean                         $strict_order          = true,
   Boolean                         $no_resolv             = false,
   Boolean                         $no_poll               = false,
+  Optional[Array[String]]         $other_name_servers    = undef,
+
+
+
+
+
+
+
+
+
+
 ) {
 
   include ::dnsmasq

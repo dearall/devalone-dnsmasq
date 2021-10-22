@@ -96,11 +96,22 @@ no-resolv
 # If you don't want dnsmasq to poll /etc/resolv.conf or other resolv
 # files for changes and re-read them then uncomment this.
 # 不检测 /etc/resolv.conf 的变化
+<% if @no_poll -%>
+no-poll
+<%- else -%>
 #no-poll
+<%- end -%>
 
 # Add other name servers here, with domain specs if they are for
 # non-public domains.
-#server=/localnet/192.168.0.1
+<% unless @other_name_servers.empty {-%>
+<% @other_name_servers.each |$ns| {-%>
+server=<%= $ns %>
+<% } -%>
+<% } %>
+<%- else -%>
+#server=/example.com/192.168.0.1
+<% end -%>
 
 # Example of routing PTR queries to nameservers: this will send all
 # address->name queries for 192.168.3/24 to nameserver 10.1.2.3
@@ -133,8 +144,16 @@ local=/sansovo.org/
 
 # If you want dnsmasq to change uid and gid to something other
 # than the default, edit the following lines.
+<% if @user -%>
+user=<%= @user -%>
+<%- else -%>
 #user=
+<%- end -%>
+<% if @group -%>
+group=<%= group -%>
+<%- else -%>
 #group=
+<%- end -%>
 
 # If you want dnsmasq to listen for DHCP and DNS requests only on
 # specified interfaces (and the loopback) give the name of the
