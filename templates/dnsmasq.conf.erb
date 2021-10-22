@@ -16,23 +16,24 @@ port=<%= @port %>
 <%- end -%>
 
 # Never forward plain names (without a dot or domain part)
-<% if domain_needed %>
+<% if @domain_needed -%>
 domain-needed
 <%- else -%>
 #domain-needed
 <%- end -%>
+
 # Never forward addresses in the non-routed address spaces.
 # 不转发在非路由地址空间(non-routed address spaces)中的地址
-<% if bogus_priv %>
+<% if @bogus_priv -%>
 bogus-priv
 <%- else -%>
 #bogus-priv
-<% end %>
+<% end -%>
 
 # Uncomment these to enable DNSSEC validation and caching:
 # (Requires dnsmasq to be built with DNSSEC option.)
 #conf-file=%%PREFIX%%/share/dnsmasq/trust-anchors.conf
-<% if @dnssec %>
+<% if @dnssec -%>
 dnssec
 <%- else -%>
 #dnssec
@@ -44,9 +45,9 @@ dnssec
 # record somewhere between the root and the domain does not exist.
 # The cost of setting this is that even queries in unsigned domains will need
 # one or more extra DNS queries to verify.
-<% if @dnssec_check_unsigned %>
+<% if @dnssec_check_unsigned -%>
 dnssec-check-unsigned
-<% else %>
+<%- else -%>
 #dnssec-check-unsigned
 <%- end -%>
 
@@ -56,15 +57,18 @@ dnssec-check-unsigned
 # so don't use it if you use eg Kerberos, SIP, XMMP or Google-talk.
 # This option only affects forwarding, SRV records originating for
 # dnsmasq (via srv-host= lines) are not suppressed by it.
-<% @filterwin2k %>
+<% if @filterwin2k -%>
 filterwin2k
-<% else %>
+<%- else -%>
 #filterwin2k
-<% end %>
+<%- end -%>
+
 # Change this line if you want dns to get its upstream servers from
 # somewhere other that /etc/resolv.conf
 # 指定 resolv-file 文件路径，默认/etc/resolv.conf
+<% if @resolv_file -%>
 resolv-file=<%= @resolv_file %>
+<%- end -%>
 
 # By  default,  dnsmasq  will  send queries to any of the upstream
 # servers it knows about and tries to favour servers to are  known
@@ -72,14 +76,22 @@ resolv-file=<%= @resolv_file %>
 # with  each  server  strictly  in  the  order  they   appear   in
 # /etc/resolv.conf
 # 严格按照resolv.conf中的顺序进行查找
+<% if @strict_order -%>
 strict-order
+<% else -%>
+#strict-order
+<%- end -%>
 
 # If you don't want dnsmasq to read /etc/resolv.conf or any other
 # file, getting its servers from this file instead (see below), then
 # uncomment this.
 # man --no-resolv: Don't read /etc/resolv.conf. Get upstream servers only from the command line or the dnsmasq configuration file.
 # 不读取 resolv-file 来确定上游服务器
+<% if @no_resolv -%>
+no-resolv
+<%- else -%>
 #no-resolv
+<%- end -%>
 
 # If you don't want dnsmasq to poll /etc/resolv.conf or other resolv
 # files for changes and re-read them then uncomment this.

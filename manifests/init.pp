@@ -37,10 +37,16 @@ class dnsmasq (
   # create_resources(dnsmasq::dhcp_host, $dhcp_hosts_hash)
 
   dnsmasq::conf { 'dns-server':
-    ensure      => 'present',
     priority    => 10,
+    resolv_file => '/etc/resolv.dnsmasq',
     # port   => '5353',
     # source => 'puppet:///modules/dnsmasq/dnsmasq.conf',
-    resolv_file => '/etc/resolv.dnsmasq',
+    # domain_needed => false,
+    # bogus_priv    => false,
+    # dnssec => true,
+    # dnssec_check_unsigned => true,
+    # filterwin2k => false,
+    # strict_order => false,
+    # no_resolv   => true,
   }
 }

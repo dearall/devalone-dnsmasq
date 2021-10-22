@@ -73,11 +73,32 @@
 #
 # @param resolv_file
 #   Change this line if you want dns to get its upstream servers from somewhere other that /etc/resolv.conf. 
-#   for example, set this attr's value: /etc/resolv.dnsmasq
+#   for example, set this attr's value: '/etc/resolv.dnsmasq'
 #
-#   Default value: '/etc/resolv.conf'
+#   Default value: undef
 #
+# @param strict_order
+#   By  default,  dnsmasq  will  send queries to any of the upstream servers it knows about and
+#   tries to favour servers to are  known to  be  up. Uncommenting this forces dnsmasq to try
+#   each query with  each  server  strictly in the order they appear in /etc/resolv.conf
+#   严格按照 resolv.conf 中的顺序进行查找
 #
+#   Default value: true
+#
+# @param no_resolv
+#   If you don't want dnsmasq to read /etc/resolv.conf or any other file, getting its servers
+#   from this file instead (see below). Get upstream servers only from the command line or the
+#   dnsmasq configuration file.
+#   不读取 resolv-file 来确定上游服务器
+#
+#   Default value: false
+#
+# @param no_poll
+#   If you don't want dnsmasq to poll /etc/resolv.conf or other resolv files for changes and 
+#   re-read them then set this attribute true.
+#   不检测 /etc/resolv.conf 的变化
+#
+#   Default value: false
 #
 #
 #
@@ -86,18 +107,21 @@
 #
 #
 define dnsmasq::conf (
-  Enum['present','file','absent'] $ensure  = 'present',
-  Integer   $priority              = 10,
-  String[1] $source                = undef,
+  Enum['present','file','absent'] $ensure               = 'present',
+  Integer                         $priority             = 10,
+  Optional[Stdlib::Absolutepath]  $source               = undef,
 
   # conf params
-  String[1] $port                  = undef,
-  Boolean   $domain_needed         = true,
-  Boolean   $bogus_priv            = true,
-  Boolean   $dnssec                = false,
-  Boolean   $dnssec_check_unsigned = false,
-  Boolean   $filterwin2k           = true,
-  String[1] $resolv_file           = '/etc/resolv.conf',
+  Optional[String[1]]             $port                  = undef,
+  Boolean                         $domain_needed         = true,
+  Boolean                         $bogus_priv            = true,
+  Boolean                         $dnssec                = false,
+  Boolean                         $dnssec_check_unsigned = false,
+  Boolean                         $filterwin2k           = true,
+  Optional[Stdlib::Absolutepath]  $resolv_file           = undef,
+  Boolean                         $strict_order          = true,
+  Boolean                         $no_resolv             = false,
+  Boolean                         $no_poll               = false,
 ) {
 
   include ::dnsmasq
