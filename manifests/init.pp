@@ -39,6 +39,8 @@ class dnsmasq (
   dnsmasq::conf { 'dns-server':
     priority           => 10,
     resolv_file        => '/etc/resolv.dnsmasq',
+    # user  => 'root',
+    # group => 'root',
     # port   => '5353',
     # source => 'puppet:///modules/dnsmasq/dnsmasq.conf',
     # domain_needed => false,
@@ -48,6 +50,7 @@ class dnsmasq (
     # filterwin2k => false,
     # strict_order => false,
     # no_resolv   => true,
-    # other_name_servers => ['/sansovo.org/192.168.0.2'],
+    # no_poll            => true,
+    # other_name_servers => ['/sansovo.org/192.168.0.2', '/example.org/192.168.0.2'],
   }
 }

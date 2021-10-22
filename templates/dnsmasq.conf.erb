@@ -104,12 +104,11 @@ no-poll
 
 # Add other name servers here, with domain specs if they are for
 # non-public domains.
-<% unless @other_name_servers.empty {-%>
-<% @other_name_servers.each { |ns| -%>
+<% if @other_name_servers && !@other_name_servers.empty? then -%>
+<% @other_name_servers.each do |ns| -%>
 server=<%= ns %>
-<% } -%>
-<% } -%>
-<%- else -%>
+<% end -%>
+<% else -%>
 #server=/example.com/192.168.0.1
 <% end -%>
 
@@ -149,8 +148,8 @@ user=<%= @user -%>
 <%- else -%>
 #user=
 <%- end -%>
-<% if @group -%>
-group=<%= group -%>
+<% if @group %>
+group=<%= @group -%>
 <%- else -%>
 #group=
 <%- end -%>
