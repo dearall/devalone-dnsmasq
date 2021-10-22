@@ -105,10 +105,10 @@ no-poll
 # Add other name servers here, with domain specs if they are for
 # non-public domains.
 <% unless @other_name_servers.empty {-%>
-<% @other_name_servers.each |$ns| {-%>
-server=<%= $ns %>
+<% @other_name_servers.each { |ns| -%>
+server=<%= ns %>
 <% } -%>
-<% } %>
+<% } -%>
 <%- else -%>
 #server=/example.com/192.168.0.1
 <% end -%>
