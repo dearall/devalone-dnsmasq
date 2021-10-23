@@ -112,6 +112,20 @@
 #
 #   Default value: false
 #
+# @param other_name_servers
+#   Add other name servers here, with domain specs if they are for non-public domains.
+#   e.g:
+#       other_name_servers => ['/subdomain1.example.org/192.168.0.1', '/subdomain2.example.org/192.168.0.2'],
+#
+#   Default value: undef
+#
+# @param ptr_nameservers
+#   Example of routing PTR queries to nameservers: this will send all address->name queries for 192.168.3/24 to
+#   nameserver 10.1.2.3, 192.168.4/24 to nameserver 10.1.2.4:
+#     ptr_nameservers => ['/3.168.192.in-addr.arpa/10.1.2.3', '/4.168.192.in-addr.arpa/10.1.2.4'],
+#
+#   Default value: undef
+#
 #
 #
 #
@@ -139,7 +153,7 @@ define dnsmasq::conf (
   Boolean                         $no_resolv             = false,
   Boolean                         $no_poll               = false,
   Optional[Array[String]]         $other_name_servers    = undef,
-
+  Optional[Array[String]]         $ptr_nameservers       = undef,
 
 
 

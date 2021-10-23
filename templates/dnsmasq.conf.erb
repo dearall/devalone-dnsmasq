@@ -114,7 +114,13 @@ server=<%= ns %>
 
 # Example of routing PTR queries to nameservers: this will send all
 # address->name queries for 192.168.3/24 to nameserver 10.1.2.3
-server=/0.168.192.in-addr.arpa/192.168.0.2
+<% if @ptr_nameservers && !@ptr_nameservers.empty? then -%>
+<% @ptr_nameservers.each do |ns| -%>
+server=<%= ns %>
+<% end -%>
+<% else -%>
+#server=/3.168.192.in-addr.arpa/10.1.2.3
+<% end -%>
 
 # Add local-only domains here, queries in these domains are answered
 # from /etc/hosts or DHCP only.
