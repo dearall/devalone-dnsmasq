@@ -126,6 +126,33 @@
 #
 #   Default value: undef
 #
+# @param local_only_domains
+#   Add local-only domains here, queries in these domains are answered from /etc/hosts or DHCP only.
+#   e.g:
+#       local_only_domains => ['/local-example1.org/', '/local-example2.org/'], 
+#
+#   Default value: undef
+#
+# @param domains_force_to_ip
+#   Add domains which you want to force to an IP address here.
+#   The example below send any host in double-click.net to a local web-server.
+#     domains_force_to_ip => ['/double-click.net/127.0.0.1'],
+#   
+#   work with IPv6 addresses too.
+#     domains_force_to_ip => ['/www.thekelleys.org.uk/fe80::20d:60ff:fe36:f83'],
+#
+#   Default value: undef
+#
+# @param ipset
+#   Places the resolved IP addresses of queries for one or more domains in the specified Netfilter
+#   IP set. If multiple setnames are given, then the addresses are placed in each of them, subject
+#   to the limitations of an IP set (IPv4 addresses cannot be stored in an IPv6 IP set and vice versa).
+#   Domains and subdomains are matched in the same way as --address. These IP sets must already exist.
+#   See ipset(8) for more details.
+#   e.g. add the IPs of all queries to yahoo.com, google.com, and their subdomains to the vpn and
+#   search ipsets:
+#
+#     ipset => '/yahoo.com/google.com/vpn,search',
 #
 #
 #
@@ -154,6 +181,9 @@ define dnsmasq::conf (
   Boolean                         $no_poll               = false,
   Optional[Array[String]]         $other_name_servers    = undef,
   Optional[Array[String]]         $ptr_nameservers       = undef,
+  Optional[Array[String]]         $local_only_domains    = undef,
+  Optional[Array[String]]         $domains_force_to_ip   = undef,
+  Optional[String[1]]             $ipset                 = undef,
 
 
 

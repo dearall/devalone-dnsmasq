@@ -7,3 +7,8 @@ dnsmasq::package_ensure: installed
 dnsmasq::service_control: true
 dnsmasq::purge_config_dir: false
 
+# mirror to dnsmasq::conf attributes
+dnsmasq::local_only_domains: ~
+dnsmasq::domains_force_to_ip: ~
+dnsmasq::ipset: ~
+

@@ -4,14 +4,29 @@
 #
 # @example
 #   include dnsmasq
+#
+# @param local_only_domains
+#   Mirror to dnsmasq::conf `local_only_domains` attribute.
+#
+# @param domains_force_to_ip
+#   Mirror to dnsmasq::conf `domains_force_to_ip` attribute.
+#
+# @param ipset
+#   Mirror to dnsmasq::conf `ipset` attribute.
+#
+#
 class dnsmasq (
   # Hash $configs_hash,
   # Hash $hosts_hash,
   # Hash $dhcp_hosts_hash,
   String[1] $package_ensure,
-  Boolean $package_manage,
-  Boolean $service_control,
-  Boolean $purge_config_dir
+  Boolean   $package_manage,
+  Boolean   $service_control,
+  Boolean   $purge_config_dir,
+
+  Optional[Array[String]] $local_only_domains,
+  Optional[Array[String]] $domains_force_to_ip,
+  Optional[String[1]]     $ipset,
 
 ) {
   include dnsmasq::params
@@ -52,6 +67,9 @@ class dnsmasq (
     # no_resolv   => true,
     # no_poll     => true,
     # other_name_servers => ['/subdomain1.example.org/192.168.0.1', '/subdomain2.example.org/192.168.0.2'],
-    ptr_nameservers => ['/3.168.192.in-addr.arpa/10.1.2.3', '/4.168.192.in-addr.arpa/10.1.2.4'],
+    # ptr_nameservers => ['/3.168.192.in-addr.arpa/10.1.2.3', '/4.168.192.in-addr.arpa/10.1.2.4'],
+    local_only_domains  => $local_only_domains,
+    domains_force_to_ip => $domains_force_to_ip,
+    ipset               => $ipset,
   }
 }
