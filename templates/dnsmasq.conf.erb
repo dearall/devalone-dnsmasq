@@ -155,12 +155,24 @@ ipset=<%= @ipset%>
 
 # You can control how dnsmasq talks to a server: this forces
 # queries to 10.1.2.3 to be routed via eth1
+<% if @queries_via_eth && !@queries_via_eth.empty? then -%>
+<% @queries_via_eth.each do |item| -%>
+server=<%= item %>
+<% end -%>
+<% else -%>
 # server=10.1.2.3@eth1
+<% end -%>
 
 # and this sets the source (ie local) address used to talk to
 # 10.1.2.3 to 192.168.1.1 port 55 (there must be an interface with that
 # IP on the machine, obviously).
+<% if @queries_via_ip && !@queries_via_ip.empty? then -%>
+<% @queries_via_ip.each do |item| -%>
+server=<%= item %>
+<% end -%>
+<% else -%>
 # server=10.1.2.3@192.168.1.1#55
+<% end -%>
 
 # If you want dnsmasq to change uid and gid to something other
 # than the default, edit the following lines.
@@ -178,17 +190,40 @@ group=<%= @group -%>
 # If you want dnsmasq to listen for DHCP and DNS requests only on
 # specified interfaces (and the loopback) give the name of the
 # interface (eg eth0) here.
-# Repeat the line for more than one interface.
+<% if @interfaces && !@interfaces.empty? then -%>
+<% @interfaces.each do |eth| -%>
+interface=<%= eth %>
+<% end -%>
+<% else -%>
 #interface=eth1
+<% end -%>
 # Or you can specify which interface _not_ to listen on
+<% if @except_interfaces && !@except_interfaces.empty? then -%>
+<% @except_interfaces.each do |eth| -%>
+except-interface=<%= eth %>
+<% end -%>
+<% else -%>
 #except-interface=
+<% end -%>
 # Or which to listen on by address (remember to include 127.0.0.1 if
 # you use this.)
+<% if @listen_addresses && !@listen_addresses.empty? then -%>
+<% @listen_addresses.each do |addr| -%>
+listen-address=<%= addr %>
+<% end -%>
+<% else -%>
 #listen-address=192.168.0.2,127.0.0.1
+<% end -%>
 # If you want dnsmasq to provide only DNS service on an interface,
 # configure it as shown above, and then use the following line to
 # disable DHCP and TFTP on it.
+<% if @no_dhcp_interfaces && !@no_dhcp_interfaces.empty? then -%>
+<% @no_dhcp_interfaces.each do |eth| -%>
+no-dhcp-interface=<%= eth %>
+<% end -%>
+<% else -%>
 #no-dhcp-interface=
+<% end -%>
 
 # On systems which support it, dnsmasq binds the wildcard address,
 # even when it is listening on only some interfaces. It then discards
@@ -197,18 +232,36 @@ group=<%= @group -%>
 # want dnsmasq to really bind only the interfaces it is listening on,
 # uncomment this option. About the only time you may need this is when
 # running another nameserver on the same machine.
+<% if @bind_interfaces -%>
+bind-interfaces
+<%- else -%>
 #bind-interfaces
+<%- end -%>
 
 # If you don't want dnsmasq to read /etc/hosts, uncomment the
 # following line.
+<% if @no_hosts -%>
+no-hosts
+<%- else -%>
 #no-hosts
+<%- end -%>
 # or if you want it to read another file, as well as /etc/hosts, use
 # this.
+<% if @addn_hosts && !@addn_hosts.empty? then -%>
+<% @addn_hosts.each do |file| -%>
+addn-hosts=<%= file %>
+<% end -%>
+<% else -%>
 #addn-hosts=/etc/banner_add_hosts
+<% end -%>
 
 # Set this (and domain: see below) if you want to have a domain
 # automatically added to simple names in a hosts-file.
+<% if @expand_hosts -%>
 expand-hosts
+<%- else -%>
+#expand-hosts
+<%- end -%>
 
 # Set the domain for dnsmasq. this is optional, but if it is set, it
 # does the following things.
@@ -217,13 +270,25 @@ expand-hosts
 # 2) Sets the "domain" DHCP option thereby potentially setting the
 #    domain of all systems configured by DHCP
 # 3) Provides the domain part for "expand-hosts"
-domain=sansovo.org
+<% if @domain -%>
+domain=<%= @domain %>
+<%- else -%>
+#domain=thekelleys.org.uk
+<%- end -%>
 
 # Set a different domain for a particular subnet
+<% if @domain_for_subnet -%>
+domain=<%= @domain_for_subnet %>
+<%- else -%>
 #domain=wireless.thekelleys.org.uk,192.168.2.0/24
+<%- end -%>
 
 # Same idea, but range rather then subnet
+<% if @domain_for_range -%>
+domain=<%= @domain_for_range %>
+<%- else -%>
 #domain=reserved.thekelleys.org.uk,192.68.3.100,192.168.3.200
+<%- end -%>
 
 # Uncomment this to enable the integrated DHCP server, you need
 # to supply the range of addresses available for lease and optionally

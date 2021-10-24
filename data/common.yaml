@@ -8,7 +8,37 @@ dnsmasq::service_control: true
 dnsmasq::purge_config_dir: false
 
 # mirror to dnsmasq::conf attributes
+dnsmasq::conf_ensure: present
+dnsmasq::conf_priority: 10
+dnsmasq::conf_source: ~
+dnsmasq::port: ~
+dnsmasq::user: ~
+dnsmasq::group: ~
+dnsmasq::domain_needed: true
+dnsmasq::bogus_priv: true
+dnsmasq::dnssec: false
+dnsmasq::dnssec_check_unsigned: false
+dnsmasq::filterwin2k: false
+dnsmasq::resolv_file: ~
+dnsmasq::strict_order: false
+dnsmasq::no_resolv: false
+dnsmasq::no_poll: false
+dnsmasq::other_name_servers: ~
+dnsmasq::ptr_nameservers: ~
 dnsmasq::local_only_domains: ~
 dnsmasq::domains_force_to_ip: ~
 dnsmasq::ipset: ~
+dnsmasq::queries_via_eth: ~
+dnsmasq::queries_via_ip: ~
+dnsmasq::interfaces: ~
+dnsmasq::except_interfaces: ~
+dnsmasq::listen_addresses: ~
+dnsmasq::no_dhcp_interfaces: ~
+dnsmasq::bind_interfaces: false
+dnsmasq::no_hosts: false
+dnsmasq::addn_hosts: ~
+dnsmasq::expand_hosts: false
+dnsmasq::domain: ~
+dnsmasq::domain_for_subnet: ~
+dnsmasq::domain_for_range: ~
 

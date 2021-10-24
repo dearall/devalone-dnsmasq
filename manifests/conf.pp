@@ -81,7 +81,7 @@
 #   SIP, XMMP or Google-talk. This option only affects forwarding, SRV records originating for dnsmasq (via srv-host= 
 #   lines) are not suppressed by it.
 #
-#   Default value: true
+#   Default value: false
 #
 # @param resolv_file
 #   Change this line if you want dns to get its upstream servers from somewhere other that /etc/resolv.conf. 
@@ -95,7 +95,7 @@
 #   each query with  each  server  strictly in the order they appear in /etc/resolv.conf
 #   严格按照 resolv.conf 中的顺序进行查找
 #
-#   Default value: true
+#   Default value: false
 #
 # @param no_resolv
 #   If you don't want dnsmasq to read /etc/resolv.conf or any other file, getting its servers
@@ -154,6 +154,134 @@
 #
 #     ipset => '/yahoo.com/google.com/vpn,search',
 #
+#   Default value: undef
+#
+# @param queries_via_eth
+#   The optional string after the @ character tells dnsmasq how to set the source of the queries to 
+#   this nameserver. It can either be an ip-address, an interface name or both. The ip-address should
+#   belong to the machine on which dnsmasq is running, otherwise this server line will be logged and
+#   then ignored. If an interface name is given, then queries to the server will be forced via that
+#   interface; if an ip-address is given then the source address of the queries will be set to that
+#   address; and if both are given then a combination of ip-address and interface name will be used
+#   to steer requests to the server. The query-port flag is ignored for any servers which have a source
+#   address specified but the port may be specified directly as part of the source address. Forcing
+#   queries to an interface is not implemented on all platforms supported by dnsmasq. 
+#
+#   You can control how dnsmasq talks to a server by this attribute, or the `queries_via_ip` attribute
+#   shows below. e.g this forces queries to 10.1.2.3 to be routed via eth1:
+#
+#     queries_via_eth => ['10.1.2.3@eth1'],
+#
+#   Default value: undef
+#
+# @param queries_via_ip
+#   This sets the source (ie local) address used to talk to 10.1.2.3 to 192.168.1.1 port 55 (there
+#   must be an interface with that IP on the machine, obviously).
+#
+#     queries_via_ip => ['10.1.2.3@192.168.1.1#55'],
+#
+#   Default value: undef
+#
+# @param interfaces
+#   If you want dnsmasq to listen for DHCP and DNS requests only on specified interfaces (and the
+#   loopback) give the name of the interface (eg eth0, eth1) here.
+#
+#     interfaces => ['eth0', 'eth1'],
+#
+#   Default value: undef
+#
+# @param except_interfaces
+#   Or you can specify which interface _not_ to listen on
+#
+#     except_interfaces => ['eth1'],
+#
+#   Default value: undef
+#
+# @param listen_addresses
+#   Or which to listen on by address (remember to include 127.0.0.1 if you use this.)
+#
+#     listen_addresses => ['192.168.0.2,127.0.0.1'],
+#
+#   Default value: undef
+#
+# @param no_dhcp_interfaces
+#   If you want dnsmasq to provide only DNS service on an interface, configure it as shown above,
+#   and then use the following line to disable DHCP and TFTP on it.
+#
+#     no_dhcp_interfaces => ['eth0, eth1'],
+#
+#   Default value: undef
+#
+# @param bind_interfaces
+#   On systems which support it, dnsmasq binds the wildcard address, even when it is listening on
+#   only some interfaces. It then discards requests that it shouldn't reply to. This has the advantage
+#   of working even when interfaces come and go and change address. If you want dnsmasq to really bind
+#   only the interfaces it is listening on, uncomment this option. About the only time you may need this
+#   is when running another nameserver on the same machine.
+#
+#   Default value: false
+#
+# @param no_hosts
+#   If you don't want dnsmasq to read /etc/hosts, set no_hosts to true.
+#
+#   Default value: false
+#
+# @param addn_hosts
+#   Additional hosts file. Read the specified file as well as /etc/hosts. If `no_hosts` is given,
+#   read only the specified file. This option may be repeated for more than one additional hosts file.
+#   If a directory is given, then read all the files contained in that directory in alphabetical order. 
+#   e.g
+#
+#     addn_hosts => ['/etc/banner_add_hosts1', '/etc/banner_add_hosts2'],
+#
+#   Default value: undef
+#
+# @param expand_hosts
+#   Set this (and domain: see below) if you want to have a domain automatically added to simple names
+#   in a hosts-file.
+#
+# @param domain
+#   Set the domain for dnsmasq. this is optional, but if it is set, it does the following things.
+#   1) Allows DHCP hosts to have fully qualified domain names, as long as the domain part matches
+#      this setting.
+#   2) Sets the "domain" DHCP option thereby potentially setting the domain of all systems configured
+#      by DHCP
+#   3) Provides the domain part for "expand-hosts"
+#
+# @param domain_for_subnet
+#
+#   Set a different domain for a particular subnet
+#   e.g
+#      domain_for_subnet => 'wireless.thekelleys.org.uk,192.168.2.0/24',
+#
+#   Default value: undef
+#
+# @param domain_for_range
+#
+#   Same idea, but range rather then subnet
+#   e.g
+#     domain_for_range => 'reserved.thekelleys.org.uk,192.68.3.100,192.168.3.200',
+#
+#   Default value: undef
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #
 #
 #
@@ -174,9 +302,9 @@ define dnsmasq::conf (
   Boolean                         $bogus_priv            = true,
   Boolean                         $dnssec                = false,
   Boolean                         $dnssec_check_unsigned = false,
-  Boolean                         $filterwin2k           = true,
+  Boolean                         $filterwin2k           = false,
   Optional[Stdlib::Absolutepath]  $resolv_file           = undef,
-  Boolean                         $strict_order          = true,
+  Boolean                         $strict_order          = false,
   Boolean                         $no_resolv             = false,
   Boolean                         $no_poll               = false,
   Optional[Array[String]]         $other_name_servers    = undef,
@@ -184,7 +312,19 @@ define dnsmasq::conf (
   Optional[Array[String]]         $local_only_domains    = undef,
   Optional[Array[String]]         $domains_force_to_ip   = undef,
   Optional[String[1]]             $ipset                 = undef,
-
+  Optional[Array[String]]         $queries_via_eth       = undef,
+  Optional[Array[String]]         $queries_via_ip        = undef,
+  Optional[Array[String]]         $interfaces            = undef,
+  Optional[Array[String]]         $except_interfaces     = undef,
+  Optional[Array[String]]         $listen_addresses      = undef,
+  Optional[Array[String]]         $no_dhcp_interfaces    = undef,
+  Boolean                         $bind_interfaces       = false,
+  Boolean                         $no_hosts              = false,
+  Optional[Array[String]]         $addn_hosts            = undef,
+  Boolean                         $expand_hosts          = false,
+  Optional[String[1]]             $domain                = undef,
+  Optional[String[1]]             $domain_for_subnet     = undef,
+  Optional[String[1]]             $domain_for_range      = undef,
 
 
 
