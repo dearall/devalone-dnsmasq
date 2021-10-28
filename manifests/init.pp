@@ -99,24 +99,122 @@
 # @param domain
 #   Mapping to dnsmasq::conf `domain` attribute.
 #
-# @param domain_for_subnet
-#   Mapping to dnsmasq::conf `domain_for_subnet` attribute.
+# @param dhcp_range
+#   Mapping to dnsmasq::conf `dhcp_range` attribute.
 #
-# @param domain_for_range
-#   Mapping to dnsmasq::conf `domain_for_range` attribute.
+# @param dhcp_enable_ra
+#   Mapping to dnsmasq::conf `dhcp_enable_ra` attribute.
 #
+# @param dhcp_host
+#   Mapping to dnsmasq::conf `dhcp_host` attribute.
 #
+# @param dhcp_ignore
+#   Mapping to dnsmasq::conf `dhcp_ignore` attribute.
 #
+# @param dhcp_vendorclass
+#   Mapping to dnsmasq::conf `dhcp_vendorclass` attribute.
 #
+# @param dhcp_userclass
+#   Mapping to dnsmasq::conf `dhcp_userclass` attribute.
 #
+# @param dhcp_mac
+#   Mapping to dnsmasq::conf `dhcp_mac` attribute.
 #
+# @param read_ethers
+#   Mapping to dnsmasq::conf `read_ethers` attribute.
 #
+# @param dhcp_option
+#   Mapping to dnsmasq::conf `dhcp_option` attribute.
 #
+# @param dhcp_option_force
+#   Mapping to dnsmasq::conf `dhcp_option_force` attribute.
 #
+# @param dhcp_boot
+#   Mapping to dnsmasq::conf `dhcp_boot` attribute.
 #
+# @param dhcp_match
+#   Mapping to dnsmasq::conf `dhcp_match` attribute.
 #
+# @param pxe_prompt
+#   Mapping to dnsmasq::conf `pxe_prompt` attribute.
 #
+# @param pxe_service
+#   Mapping to dnsmasq::conf `pxe_service` attribute.
 #
+# @param enable_tftp
+#   Mapping to dnsmasq::conf `enable_tftp` attribute.
+#
+# @param tftp_root
+#   Mapping to dnsmasq::conf `tftp_root` attribute.
+#
+# @param tftp_no_fail
+#   Mapping to dnsmasq::conf `tftp_no_fail` attribute.
+#
+# @param tftp_secure
+#   Mapping to dnsmasq::conf `tftp_secure` attribute.
+#
+# @param tftp_no_blocksize
+#   Mapping to dnsmasq::conf `tftp_no_blocksize` attribute.
+#
+# @param dhcp_lease_max
+#   Mapping to dnsmasq::conf `dhcp_lease_max` attribute.
+#
+# @param dhcp_leasefile
+#   Mapping to dnsmasq::conf `dhcp_leasefile` attribute.
+#
+# @param dhcp_authoritative
+#   Mapping to dnsmasq::conf `dhcp_authoritative` attribute.
+#
+# @param dhcp_script
+#   Mapping to dnsmasq::conf `dhcp_script` attribute.
+#
+# @param cache_size
+#   Mapping to dnsmasq::conf `cache_size` attribute.
+#
+# @param no_negcache
+#   Mapping to dnsmasq::conf `no_negcache` attribute.
+#
+# @param local_ttl
+#   Mapping to dnsmasq::conf `local_ttl` attribute.
+#
+# @param bogus_nxdomain
+#   Mapping to dnsmasq::conf `bogus_nxdomain` attribute.
+#
+# @param dns_alias
+#   Mapping to dnsmasq::conf `dns_alias` attribute.
+#
+# @param mx_host
+#   Mapping to dnsmasq::conf `mx_host` attribute.
+#
+# @param mx_target
+#   Mapping to dnsmasq::conf `mx_target` attribute.
+#
+# @param localmx
+#   Mapping to dnsmasq::conf `localmx` attribute.
+#
+# @param selfmx
+#   Mapping to dnsmasq::conf `selfmx` attribute.
+#
+# @param dns_srv_host
+#   Mapping to dnsmasq::conf `dns_srv_host` attribute.
+#
+# @param txt_record
+#   Mapping to dnsmasq::conf `txt_record` attribute.
+#
+# @param dns_cname
+#   Mapping to dnsmasq::conf `dns_cname` attribute.
+#
+# @param log_queries
+#   Mapping to dnsmasq::conf `log_queries` attribute.
+#
+# @param log_dhcp
+#   Mapping to dnsmasq::conf `log_dhcp` attribute.
+#
+# @param dhcp_name_match
+#   Mapping to dnsmasq::conf `dhcp_name_match` attribute.
+#
+# @param dhcp_ignore_names
+#   Mapping to dnsmasq::conf `dhcp_ignore_names` attribute.
 #
 #
 class dnsmasq (
@@ -144,25 +242,66 @@ class dnsmasq (
   Boolean                         $strict_order,
   Boolean                         $no_resolv,
   Boolean                         $no_poll,
-  Optional[Array[String]]         $other_name_servers,
-  Optional[Array[String]]         $ptr_nameservers,
-  Optional[Array[String]]         $local_only_domains,
-  Optional[Array[String]]         $domains_force_to_ip,
+  Optional[Array[String[1]]]      $other_name_servers,
+  Optional[Array[String[1]]]      $ptr_nameservers,
+  Optional[Array[String[1]]]      $local_only_domains,
+  Optional[Array[String[1]]]      $domains_force_to_ip,
   Optional[String[1]]             $ipset,
-  Optional[Array[String]]         $queries_via_eth,
-  Optional[Array[String]]         $queries_via_ip,
-  Optional[Array[String]]         $interfaces,
-  Optional[Array[String]]         $except_interfaces,
-  Optional[Array[String]]         $listen_addresses,
-  Optional[Array[String]]         $no_dhcp_interfaces,
+  Optional[Array[String[1]]]      $queries_via_eth,
+  Optional[Array[String[1]]]      $queries_via_ip,
+  Optional[Array[String[1]]]      $interfaces,
+  Optional[Array[String[1]]]      $except_interfaces,
+  Optional[Array[String[1]]]      $listen_addresses,
+  Optional[Array[String[1]]]      $no_dhcp_interfaces,
   Boolean                         $bind_interfaces,
   Boolean                         $no_hosts,
-  Optional[Array[String]]         $addn_hosts,
+  Optional[Array[String[1]]]      $addn_hosts,
   Boolean                         $expand_hosts,
-  Optional[String[1]]             $domain,
-  Optional[String[1]]             $domain_for_subnet,
-  Optional[String[1]]             $domain_for_range,
+  Optional[Array[String[1]]]      $domain,
 
+  # dhcp config
+  Optional[Array[String[1]]]      $dhcp_range,
+
+  Boolean                         $dhcp_enable_ra,
+  Optional[Array[String[1]]]      $dhcp_host,
+  Optional[Array[String[1]]]      $dhcp_ignore,
+  Optional[Array[String[1]]]      $dhcp_vendorclass,
+  Optional[Array[String[1]]]      $dhcp_userclass,
+  Optional[Array[String[1]]]      $dhcp_mac,
+  Boolean                         $read_ethers,
+  Optional[Array[String[1]]]      $dhcp_option,
+  Optional[Array[String[1]]]      $dhcp_option_force,
+  Optional[Array[String[1]]]      $dhcp_boot,
+  Optional[Array[String[1]]]      $dhcp_match,
+  Optional[String[1]]             $pxe_prompt,
+  Optional[Array[String[1]]]      $pxe_service,
+  Optional[Array[String[1]]]      $enable_tftp,
+  Optional[String[1]]             $tftp_root,
+  Boolean                         $tftp_no_fail,
+  Boolean                         $tftp_secure,
+  Boolean                         $tftp_no_blocksize,
+  Optional[Integer]               $dhcp_lease_max,
+  Optional[String[1]]             $dhcp_leasefile,
+  Boolean                         $dhcp_authoritative,
+  Boolean                         $dhcp_rapid_commit,
+  Optional[String[1]]             $dhcp_script,
+  Optional[Integer]               $cache_size,
+  Boolean                         $no_negcache,
+  Optional[Integer]               $local_ttl,
+  Optional[Array[String[1]]]      $bogus_nxdomain,
+  Optional[Array[String[1]]]      $dns_alias,
+  Optional[Array[String[1]]]      $mx_host,
+  Optional[String[1]]             $mx_target,
+  Boolean                         $localmx,
+  Boolean                         $selfmx,
+  Optional[Array[String[1]]]      $dns_srv_host,
+  Optional[String[1]]             $ptr_record,
+  Optional[Array[String[1]]]      $txt_record,
+  Optional[Array[String[1]]]      $dns_cname,
+  Variant[Boolean, Enum['extra']] $log_queries,
+  Boolean                         $log_dhcp,
+  Optional[Array[String[1]]]      $dhcp_name_match,
+  Optional[String[1]]             $dhcp_ignore_names,
 ) {
   include dnsmasq::params
 
@@ -218,7 +357,49 @@ class dnsmasq (
     addn_hosts            => $addn_hosts,
     expand_hosts          => $expand_hosts,
     domain                => $domain,
-    domain_for_subnet     => $domain_for_subnet,
-    domain_for_range      => $domain_for_range,
+
+    # dhcp config
+    dhcp_range            => $dhcp_range,
+
+    dhcp_enable_ra        => $dhcp_enable_ra,
+    dhcp_host             => $dhcp_host,
+    dhcp_ignore           => $dhcp_ignore,
+    dhcp_vendorclass      => $dhcp_vendorclass,
+    dhcp_userclass        => $dhcp_userclass,
+    dhcp_mac              => $dhcp_mac,
+    read_ethers           => $read_ethers,
+    dhcp_option           => $dhcp_option,
+    dhcp_option_force     => $dhcp_option_force,
+    dhcp_boot             => $dhcp_boot,
+    dhcp_match            => $dhcp_match,
+    pxe_prompt            => $pxe_prompt,
+    pxe_service           => $pxe_service,
+    enable_tftp           => $enable_tftp,
+    tftp_root             => $tftp_root,
+    tftp_no_fail          => $tftp_no_fail,
+    tftp_secure           => $tftp_secure,
+    tftp_no_blocksize     => $tftp_no_blocksize,
+    dhcp_lease_max        => $dhcp_lease_max,
+    dhcp_leasefile        => $dhcp_leasefile,
+    dhcp_authoritative    => $dhcp_authoritative,
+    dhcp_rapid_commit     => $dhcp_rapid_commit,
+    dhcp_script           => $dhcp_script,
+    cache_size            => $cache_size,
+    no_negcache           => $no_negcache,
+    local_ttl             => $local_ttl,
+    bogus_nxdomain        => $bogus_nxdomain,
+    dns_alias             => $dns_alias,
+    mx_host               => $mx_host,
+    mx_target             => $mx_target,
+    localmx               => $localmx,
+    selfmx                => $selfmx,
+    dns_srv_host          => $dns_srv_host,
+    ptr_record            => $ptr_record,
+    txt_record            => $txt_record,
+    dns_cname             => $dns_cname,
+    log_queries           => $log_queries,
+    log_dhcp              => $log_dhcp,
+    dhcp_name_match       => $dhcp_name_match,
+    dhcp_ignore_names     => $dhcp_ignore_names,
   }
 }
