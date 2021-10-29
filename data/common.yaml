@@ -19,7 +19,7 @@ dnsmasq::bogus_priv: true
 dnsmasq::dnssec: false
 dnsmasq::dnssec_check_unsigned: false
 dnsmasq::filterwin2k: false
-dnsmasq::resolv_file: ~
+dnsmasq::resolv_file: '/etc/resolv.conf.dnsmasq'
 dnsmasq::strict_order: false
 dnsmasq::no_resolv: false
 dnsmasq::no_poll: false

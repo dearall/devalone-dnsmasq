@@ -85,7 +85,7 @@
 #
 # @param resolv_file
 #   Change this line if you want dns to get its upstream servers from somewhere other that /etc/resolv.conf. 
-#   for example, set this attr's value: '/etc/resolv.dnsmasq'
+#   for example, set this attr's value: '/etc/resolv.conf.dnsmasq'
 #
 #   Default value: undef
 #
@@ -545,7 +545,8 @@
 #
 #   Item syntax in this attribute:
 #
-#     [tag:<tag>,[tag:<tag>,]][encap:<opt>,][vi-encap:<enterprise>,][vendor:[<vendor-class>],][<opt>|option:<opt-name>|option6:<opt>|option6:<opt-name>],[<value>[,<value>]]
+#     [tag:<tag>,[tag:<tag>,]][encap:<opt>,][vi-encap:<enterprise>,][vendor:[<vendor-class>],]  \
+#     [<opt>|option:<opt-name>|option6:<opt>|option6:<opt-name>],[<value>[,<value>]]
 #
 #   Data types allowed are comma separated dotted-quad IPv4 addresses, []-wrapped IPv6 addresses, 
 #   a decimal number, colon-separated hex digits and a text string. If the optional tags are given then
@@ -1215,53 +1216,53 @@
 #
 #
 define dnsmasq::conf (
-  Enum['present','file','absent'] $ensure                = 'present',
-  Integer                         $priority              = 10,
-  Optional[Stdlib::Absolutepath]  $source                = undef,
+  Enum['present','file','absent']       $ensure                = 'present',
+  Integer                               $priority              = 10,
+  Optional[Stdlib::Absolutepath]        $source                = undef,
 
   # conf params
-  Optional[String[1]]             $port                  = undef,
-  Optional[String[1]]             $user                  = undef,
-  Optional[String[1]]             $group                 = undef,
-  Boolean                         $domain_needed         = true,
-  Boolean                         $bogus_priv            = true,
-  Boolean                         $dnssec                = false,
-  Boolean                         $dnssec_check_unsigned = false,
-  Boolean                         $filterwin2k           = false,
-  Optional[Stdlib::Absolutepath]  $resolv_file           = undef,
-  Boolean                         $strict_order          = false,
-  Boolean                         $no_resolv             = false,
-  Boolean                         $no_poll               = false,
-  Optional[Array[String[1]]]      $other_name_servers    = undef,
-  Optional[Array[String[1]]]      $ptr_nameservers       = undef,
-  Optional[Array[String[1]]]      $local_only_domains    = undef,
-  Optional[Array[String[1]]]      $domains_force_to_ip   = undef,
-  Optional[String[1]]             $ipset                 = undef,
-  Optional[Array[String[1]]]      $queries_via_eth       = undef,
-  Optional[Array[String[1]]]      $queries_via_ip        = undef,
-  Optional[Array[String[1]]]      $interfaces            = undef,
-  Optional[Array[String[1]]]      $except_interfaces     = undef,
-  Optional[Array[String[1]]]      $listen_addresses      = undef,
-  Optional[Array[String[1]]]      $no_dhcp_interfaces    = undef,
-  Boolean                         $bind_interfaces       = false,
-  Boolean                         $no_hosts              = false,
-  Optional[Array[String[1]]]      $addn_hosts            = undef,
-  Boolean                         $expand_hosts          = false,
-  Optional[Array[String[1]]]       $domain               = undef,
+  Optional[String[1]]                   $port                  = undef,
+  Optional[String[1]]                   $user                  = undef,
+  Optional[String[1]]                   $group                 = undef,
+  Boolean                               $domain_needed         = true,
+  Boolean                               $bogus_priv            = true,
+  Boolean                               $dnssec                = false,
+  Boolean                               $dnssec_check_unsigned = false,
+  Boolean                               $filterwin2k           = false,
+  Optional[Stdlib::Absolutepath]        $resolv_file           = undef,
+  Boolean                               $strict_order          = false,
+  Boolean                               $no_resolv             = false,
+  Boolean                               $no_poll               = false,
+  Optional[Array[String[1]]]            $other_name_servers    = undef,
+  Optional[Array[String[1]]]            $ptr_nameservers       = undef,
+  Optional[Array[String[1]]]            $local_only_domains    = undef,
+  Optional[Array[String[1]]]            $domains_force_to_ip   = undef,
+  Optional[String[1]]                   $ipset                 = undef,
+  Optional[Array[String[1]]]            $queries_via_eth       = undef,
+  Optional[Array[String[1]]]            $queries_via_ip        = undef,
+  Optional[Array[String[1]]]            $interfaces            = undef,
+  Optional[Array[String[1]]]            $except_interfaces     = undef,
+  Optional[Array[String[1]]]            $listen_addresses      = undef,
+  Optional[Array[String[1]]]            $no_dhcp_interfaces    = undef,
+  Boolean                               $bind_interfaces       = false,
+  Boolean                               $no_hosts              = false,
+  Optional[Array[Stdlib::Absolutepath]] $addn_hosts            = undef,
+  Boolean                               $expand_hosts          = false,
+  Optional[Array[String[1]]]            $domain                = undef,
 
   # dhcp config
-  Optional[Array[String[1]]]      $dhcp_range            = undef,
-  Boolean                         $dhcp_enable_ra        = false,
-  Optional[Array[String[1]]]      $dhcp_host             = undef,
-  Optional[Array[String[1]]]      $dhcp_ignore           = undef,
-  Optional[Array[String[1]]]      $dhcp_vendorclass      = undef,
-  Optional[Array[String[1]]]      $dhcp_userclass        = undef,
-  Optional[Array[String[1]]]      $dhcp_mac              = undef,
-  Boolean                         $read_ethers           = false,
-  Optional[Array[String[1]]]      $dhcp_option           = undef,
-  Optional[Array[String[1]]]      $dhcp_option_force     = undef,
-  Optional[Array[String[1]]]      $dhcp_boot             = undef,
-  Optional[Array[String[1]]]      $dhcp_match            = undef,
+  Optional[Array[String[1]]]            $dhcp_range            = undef,
+  Boolean                               $dhcp_enable_ra        = false,
+  Optional[Array[String[1]]]            $dhcp_host             = undef,
+  Optional[Array[String[1]]]            $dhcp_ignore           = undef,
+  Optional[Array[String[1]]]            $dhcp_vendorclass      = undef,
+  Optional[Array[String[1]]]            $dhcp_userclass        = undef,
+  Optional[Array[String[1]]]            $dhcp_mac              = undef,
+  Boolean                               $read_ethers           = false,
+  Optional[Array[String[1]]]            $dhcp_option           = undef,
+  Optional[Array[String[1]]]            $dhcp_option_force     = undef,
+  Optional[Array[String[1]]]            $dhcp_boot             = undef,
+  Optional[Array[String[1]]]            $dhcp_match            = undef,
 
   #pxe
   Optional[String[1]]             $pxe_prompt            = undef,
