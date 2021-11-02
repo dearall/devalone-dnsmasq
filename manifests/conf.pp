@@ -84,8 +84,16 @@
 #   Default value: false
 #
 # @param resolv_file
+#   Read the IP addresses of the upstream nameservers from <file>, instead of /etc/resolv.conf. For the
+#   format of this file see resolv.conf(5). 
+#   The only lines relevant to dnsmasq are nameserver ones. Dnsmasq can be told to poll more than one 
+#   resolv.conf file, the first file name specified overrides the default, subsequent ones add to the 
+#   list. This is only allowed when polling; the file with the currently latest modification time is 
+#   the one used. 
 #   Change this line if you want dns to get its upstream servers from somewhere other that /etc/resolv.conf. 
-#   for example, set this attr's value: '/etc/resolv.conf.dnsmasq'
+#   For example, set this attr's value: '/etc/resolv.conf.dnsmasq':
+#
+#   resolv_file => '/etc/resolv.conf.dnsmasq',
 #
 #   Default value: undef
 #

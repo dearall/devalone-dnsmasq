@@ -1,100 +1,117 @@
 # dnsmasq
 
-Welcome to your new module. A short overview of the generated parts can be found
-in the [PDK documentation][1].
-
-The README template below provides a starting point with details about what
-information to include in your README.
+Manage dnsmasq package install, service, and config file details.
 
 ## Table of Contents
 
-1. [Description](#description)
-1. [Setup - The basics of getting started with dnsmasq](#setup)
-    * [What dnsmasq affects](#what-dnsmasq-affects)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with dnsmasq](#beginning-with-dnsmasq)
-1. [Usage - Configuration options and additional functionality](#usage)
-1. [Limitations - OS compatibility, etc.](#limitations)
-1. [Development - Guide for contributing to the module](#development)
+- [dnsmasq](#dnsmasq)
+  - [Table of Contents](#table-of-contents)
+  - [Description](#description)
+  - [Setup](#setup)
+    - [What dnsmasq affects](#what-dnsmasq-affects)
+    - [Beginning with dnsmasq](#beginning-with-dnsmasq)
+  - [Usage](#usage)
+    - [Using default parameters](#using-default-parameters)
+    - [Using `source` attribute](#using-source-attribute)
+    - [Specify the resolv file to use](#specify-the-resolv-file-to-use)
+    - [Specify dhcp range](#specify-dhcp-range)
+  - [Reference](#reference)
+  - [Limitations](#limitations)
+  - [Development](#development)
+  - [Release Notes/Contributors/Etc. **Optional**](#release-notescontributorsetc-optional)
 
 ## Description
 
-Briefly tell users why they might want to use your module. Explain what your
-module does and what kind of problems users can solve with it.
-
-This should be a fairly short description helps the user decide if your module
-is what they want.
+The dnsmasq module manage dnsmasq package install, service, and config file details.
 
 ## Setup
 
-### What dnsmasq affects **OPTIONAL**
-
-If it's obvious what your module touches, you can skip this section. For
-example, folks can probably figure out that your mysql_instance module affects
-their MySQL instances.
+### What dnsmasq affects
 
 If there's more that they should know about, though, this is the place to
 mention:
 
-* Files, packages, services, or operations that the module will alter, impact,
-  or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
-
-### Setup Requirements **OPTIONAL**
-
-If your module requires anything extra before setting up (pluginsync enabled,
-another module, etc.), mention it here.
-
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you might want to include an additional "Upgrading" section here.
+- The dnsmasq module install/uninstall dnsmasq package, configure dnsmasq to run the dnsmasq.service.
+- This module depends on the stdlib module that automatically installs.
 
 ### Beginning with dnsmasq
 
-The very basic steps needed for a user to get the module up and running. This
-can include setup steps, if necessary, or it can be an example of the most basic
-use of the module.
+`include dnsmasq` is enough to get you up and running, this uses the **default** parameters to run dnsmasq module. To pass in parameters specifying which resolv file to use, and local only domain:
+
+```puppet
+class { 'dnsmasq':
+  resolv_file        => '/etc/resolv.conf.dnsmasq',
+  local_only_domains => ['/sansovo.org/'],
+}
+```
 
 ## Usage
 
-Include usage examples for common use cases in the **Usage** section. Show your
-users how to use your module to solve problems, and be sure to include code
-examples. Include three to five examples of the most important or common tasks a
-user can accomplish with your module. Show users how to accomplish more complex
-tasks that involve different types, classes, and functions working in tandem.
+All parameters for the **dnsmasq** module are contained within the main `dnsmasq` class, as well as in defined type `dnsmasq::conf`, so for any function of the module, set the options you want. See the common usages below for examples.
+
+### Using default parameters
+
+```puppet
+include dnsmasq
+```
+
+### Using `source` attribute
+
+If you have configued dnsmasq.conf file, this can be done by the dnsmasq::source parameter, as well as the dnsmasq::conf::source attribute.
+
+```puppet
+class { 'dnsmasq':
+  source => 'puppet:///...',
+}
+```
+
+or
+
+```puppet
+dnsmasq::conf { 'local dns':
+  source => 'puppet:///...',
+}
+```
+
+### Specify the resolv file to use
+
+```puppet
+class { 'dnsmasq':
+  resolv_file => '/etc/resolv.conf.dnsmasq',
+}
+```
+
+or
+
+```puppet
+dnsmasq::conf { 'local dns':
+  resolv_file => '/etc/resolv.conf.dnsmasq',
+}
+```
+
+### Specify dhcp range
+
+```puppet
+class { 'dnsmasq':
+  resolv_file     => '/etc/resolv.conf.dnsmasq',
+  dhcp_range      => ['192.168.0.100,192.168.0.150,2d'],
+  dhcp_enable_ra  => true,
+}
+```
+
+or
+
+```puppet
+dnsmasq::conf { 'local dns':
+  resolv_file     => '/etc/resolv.conf.dnsmasq',
+  dhcp_range      => ['192.168.0.100,192.168.0.150,2d'],
+  dhcp_enable_ra  => true,
+}
+```
 
 ## Reference
 
-This section is deprecated. Instead, add reference information to your code as
-Puppet Strings comments, and then use Strings to generate a REFERENCE.md in your
-module. For details on how to add code comments and generate documentation with
-Strings, see the [Puppet Strings documentation][2] and [style guide][3].
-
-If you aren't ready to use Strings yet, manually create a REFERENCE.md in the
-root of your module directory and list out each of your module's classes,
-defined types, facts, functions, Puppet tasks, task plans, and resource types
-and providers, along with the parameters for each.
-
-For each element (class, defined type, function, and so on), list:
-
-* The data type, if applicable.
-* A description of what the element does.
-* Valid values, if the data type doesn't make it obvious.
-* Default value, if any.
-
-For example:
-
-```
-### `pet::cat`
-
-#### Parameters
-
-##### `meow`
-
-Enables vocalization in your cat. Valid options: 'string'.
-
-Default: 'medium-loud'.
-```
+See [REFERENCE.md](https://github.com/dearall/devalone-resolved/blob/master/REFERENCE.md)
 
 ## Limitations
 

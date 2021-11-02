@@ -40,8 +40,6 @@
 #
 # @param resolv_file
 #   Mapping to dnsmasq::conf `resolv_file` attribute. 
-#   Notice, the default value of this parameter in `dnsmasq` class is '/etc/resolv.conf.dnsmasq', not
-#   the defined type dnsmasq::conf::resolv_file attribute's default value: undef.
 #
 # @param strict_order
 #   Mapping to dnsmasq::conf `strict_order` attribute.
