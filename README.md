@@ -111,7 +111,7 @@ dnsmasq::conf { 'local dns':
 
 ## Reference
 
-See [REFERENCE.md](https://github.com/dearall/devalone-resolved/blob/master/REFERENCE.md)
+See [REFERENCE.md](https://github.com/dearall/devalone-dnsmasq/blob/master/REFERENCE.md)
 
 ## Limitations
 
