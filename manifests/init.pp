@@ -10,23 +10,17 @@
 #   }
 #
 # @param package_manage
-#   Whether to manage the dnsmasq package. Default value: true.
+#   Whether to manage the dnsmasq package.
 #
 # @param package_ensure
 #   Whether to install the dnsmasq package, and what version to install. Values: 'present', 'installed',
 #   'absent', 'purged', 'disabled','latest', or a specific version number.
 #
-#   Default value: 'installed'
-#
 # @param service_control
 #    Whether to manage the dnsmasq service.
 #
-#    Default value: true
-#
 # @param purge_config_dir
 #   Whether to purge the config directory: '/etc/dnsmasq.d/'.
-#
-#   Default value: false
 #
 # @param conf_ensure
 #   Whether the config file should exist. Possible values are present, absent, and file.

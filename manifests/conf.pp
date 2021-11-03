@@ -18,12 +18,8 @@
 # @param ensure
 #   Whether the config file should exist. Possible values are present, absent, and file.
 #
-#   Default value: `'present'`
-#
 # @param priority
 #   The priority of file in /etc/dnsmasq.d/ directory, which is part of the configuration file name.
-#
-#   Default value: `10`
 #
 # @param source
 #   A source file, which will be copied into the configuration file. If this attribute is not `undef`, the
@@ -35,8 +31,6 @@
 #     - `file`: URIs, which behave the same as local file paths.
 #     - `http(s)`: URIs, which point to files served by common web servers.
 #
-#   Default value: `undef`
-#
 # @param port
 #   Listen on this specific port instead of the standard DNS port (53). Setting this to zero completely disables
 #   DNS function, leaving only DHCP and/or TFTP.
@@ -46,18 +40,12 @@
 #   but it will drop root privileges after startup by changing id to another user. Normally this user is "dnsmasq"
 #   but that can be over-ridden with this switch.
 #
-#   Default value: `undef`
-#
 # @param group
 #   Specify the group which dnsmasq will run as. The default is "dnsmasq".
-#
-#   Default value: undef
 #
 # @param domain_needed
 #   Tells dnsmasq to never forward A or AAAA queries for plain names, without dots or domain parts, to
 #   upstream nameservers. If the name is not known from /etc/hosts or DHCP then a "not found" answer is returned. 
-#
-#   Default value: true
 #
 # @param bogus_priv
 #   Bogus private reverse lookups. All reverse lookups for private IP ranges (ie 192.168.x.x, etc) 
@@ -65,12 +53,8 @@
 #   rather than being forwarded upstream. The set of prefixes affected is the list given in RFC6303,
 #   for IPv4 and IPv6. 
 #
-#   Default value: true
-#
 # @param dnssec
 #   Enable DNSSEC validation and caching.
-#
-#   Default value: false
 #
 # @param dnssec_check_unsigned
 #   Replies which are not DNSSEC signed may be legitimate, because the domain is unsigned, or may be forgeries. 
@@ -78,15 +62,11 @@
 #   record somewhere between the root and the domain does not exist.
 #   The cost of setting this is that even queries in unsigned domains will need one or more extra DNS queries to verify.
 #
-#   Default value: false
-#
 # @param filterwin2k
 #   Setup this attr true to filter useless windows-originated DNS requests which can trigger dial-on-demand links 
 #   needlessly. Note that (amongst other things) this blocks all SRV requests, so don't use it if you use eg Kerberos,
 #   SIP, XMMP or Google-talk. This option only affects forwarding, SRV records originating for dnsmasq (via srv-host= 
 #   lines) are not suppressed by it.
-#
-#   Default value: false
 #
 # @param resolv_file
 #   Read the IP addresses of the upstream nameservers from <file>, instead of /etc/resolv.conf. For the
@@ -100,15 +80,11 @@
 #
 #   resolv_file => '/etc/resolv.conf.dnsmasq',
 #
-#   Default value: undef
-#
 # @param strict_order
 #   By  default,  dnsmasq  will  send queries to any of the upstream servers it knows about and
 #   tries to favour servers to are  known to  be  up. Uncommenting this forces dnsmasq to try
 #   each query with  each  server  strictly in the order they appear in /etc/resolv.conf
 #   严格按照 resolv.conf 中的顺序进行查找
-#
-#   Default value: false
 #
 # @param no_resolv
 #   If you don't want dnsmasq to read /etc/resolv.conf or any other file, getting its servers
@@ -116,35 +92,27 @@
 #   dnsmasq configuration file.
 #   不读取 resolv-file 来确定上游服务器
 #
-#   Default value: false
-#
 # @param no_poll
 #   If you don't want dnsmasq to poll /etc/resolv.conf or other resolv files for changes and 
 #   re-read them then set this attribute true.
 #   不检测 /etc/resolv.conf 的变化
-#
-#   Default value: false
 #
 # @param other_name_servers
 #   Add other name servers here, with domain specs if they are for non-public domains.
 #   e.g:
 #       other_name_servers => ['/subdomain1.example.org/192.168.0.1', '/subdomain2.example.org/192.168.0.2'],
 #
-#   Default value: undef
-#
 # @param ptr_nameservers
 #   Example of routing PTR queries to nameservers: this will send all address->name queries for 192.168.3/24 to
 #   nameserver 10.1.2.3, 192.168.4/24 to nameserver 10.1.2.4:
 #     ptr_nameservers => ['/3.168.192.in-addr.arpa/10.1.2.3', '/4.168.192.in-addr.arpa/10.1.2.4'],
 #
-#   Default value: undef
 #
 # @param local_only_domains
 #   Add local-only domains here, queries in these domains are answered from /etc/hosts or DHCP only.
 #   e.g:
 #       local_only_domains => ['/local-example1.org/', '/local-example2.org/'], 
 #
-#   Default value: undef
 #
 # @param domains_force_to_ip
 #   Add domains which you want to force to an IP address here.
@@ -153,8 +121,6 @@
 #   
 #   work with IPv6 addresses too.
 #     domains_force_to_ip => ['/www.thekelleys.org.uk/fe80::20d:60ff:fe36:f83'],
-#
-#   Default value: undef
 #
 # @param ipset
 #   Places the resolved IP addresses of queries for one or more domains in the specified Netfilter
@@ -166,8 +132,6 @@
 #   search ipsets:
 #
 #     ipset => '/yahoo.com/google.com/vpn,search',
-#
-#   Default value: undef
 #
 # @param queries_via_eth
 #   The optional string after the @ character tells dnsmasq how to set the source of the queries to 
@@ -185,15 +149,12 @@
 #
 #     queries_via_eth => ['10.1.2.3@eth1'],
 #
-#   Default value: undef
-#
 # @param queries_via_ip
 #   This sets the source (ie local) address used to talk to 10.1.2.3 to 192.168.1.1 port 55 (there
 #   must be an interface with that IP on the machine, obviously).
 #
 #     queries_via_ip => ['10.1.2.3@192.168.1.1#55'],
 #
-#   Default value: undef
 #
 # @param interfaces
 #   If you want dnsmasq to listen for DHCP and DNS requests only on specified interfaces (and the
@@ -201,21 +162,17 @@
 #
 #     interfaces => ['eth0', 'eth1'],
 #
-#   Default value: undef
 #
 # @param except_interfaces
 #   Or you can specify which interface _not_ to listen on
 #
 #     except_interfaces => ['eth1'],
 #
-#   Default value: undef
 #
 # @param listen_addresses
 #   Or which to listen on by address (remember to include 127.0.0.1 if you use this.)
 #
 #     listen_addresses => ['192.168.0.2,127.0.0.1'],
-#
-#   Default value: undef
 #
 # @param no_dhcp_interfaces
 #   If you want dnsmasq to provide only DNS service on an interface, configure it as shown above,
@@ -223,7 +180,6 @@
 #
 #     no_dhcp_interfaces => ['eth0, eth1'],
 #
-#   Default value: undef
 #
 # @param bind_interfaces
 #   On systems which support it, dnsmasq binds the wildcard address, even when it is listening on
@@ -232,12 +188,10 @@
 #   only the interfaces it is listening on, uncomment this option. About the only time you may need this
 #   is when running another nameserver on the same machine.
 #
-#   Default value: false
 #
 # @param no_hosts
 #   If you don't want dnsmasq to read /etc/hosts, set no_hosts to true.
 #
-#   Default value: false
 #
 # @param addn_hosts
 #   Additional hosts file. Read the specified file as well as /etc/hosts. If `no_hosts` is given,
@@ -247,7 +201,6 @@
 #
 #     addn_hosts => ['/etc/banner_add_hosts1', '/etc/banner_add_hosts2'],
 #
-#   Default value: undef
 #
 # @param expand_hosts
 #   Set this (and domain: see below) if you want to have a domain automatically added to simple names
@@ -289,9 +242,6 @@
 #
 #     dhcp_range => ['192.168.0.50,192.168.0.100,12h','192.168.0.101,192.168.0.150,2d'],
 #
-#   Default value: undef
-#
-#   Example:
 #   For directly connected networks (ie, networks on which the machine running dnsmasq has an
 #   interface) the netmask is optional: dnsmasq will determine it from the interface configuration.
 #   For networks which receive DHCP service via a relay agent, dnsmasq cannot determine the netmask
@@ -301,7 +251,6 @@
 #
 #     dhcp_range => ['192.168.0.100,192.168.0.150,255.255.255.0,12h'],
 #
-#   Example:
 #   The optional set:<tag> sets an alphanumeric label which marks this network so that DHCP options
 #   may be specified on a per-network basis. When it is prefixed with 'tag:' instead, then its meaning
 #   changes from setting a tag to matching it. Only one tag may be set, but more than one tag may be
@@ -309,7 +258,6 @@
 #   e.g
 #     dhcp_range => ['set:red,192.168.0.50,192.168.0.99', 'tag:green,192.168.0.100,192.168.0.150,12h'],
 #
-#   Example:
 #   Specify a subnet which can't be used for dynamic address allocation, is available for hosts with
 #   matching --dhcp-host lines. Note that dhcp-host declarations will be ignored unless there is a
 #   dhcp-range of some type for the subnet in question. In this case the netmask is implied (it comes
@@ -318,19 +266,16 @@
 #   e.g
 #     dhcp_rang => ['192.168.0.0, static'],
 #
-#   Example:
 #   Enable DHCPv6. Note that the prefix-length does not need to be specified and defaults to 64 if
 #   missing.
 #   e.g
 #     dhcp_range => ['1234::2, 1234::500, 64, 12h'],
 #
-#   Example:
 #   `ra-only` tells dnsmasq to offer Router Advertisement only on this subnet, and not DHCP. Optional
 #   set the lifetime to n hours. (Note: minimum lifetime is 2 hours.)
 #   e.g
 #       dhcp_range => ['1234::, ra-only', '4567::, ra-only, 48h'],
 #
-#   Example:
 #   `ra-names` enables a mode which gives DNS names to dual-stack hosts which do SLAAC for IPv6.
 #   Dnsmasq uses the host's IPv4 lease to derive the name, network segment and MAC address and
 #   assumes that the host will also have an IPv6 address calculated using the SLAAC algorithm,
@@ -341,20 +286,17 @@
 #   e.g
 #     dhcp_range => ['1234::, ra-names'],
 #
-#   Example:
 #   `slaac` tells dnsmasq to offer Router Advertisement on this subnet and to set the A bit in the
 #   router advertisement, so that the client will use SLAAC addresses. When used with a DHCP range
 #   or static DHCP address this results in the client having both a DHCP-assigned and a SLAAC address.
 #   e.g
 #     dhcp_range => ['1234::2, 1234::500, slaac'],
 #
-#   Example:
 #   ra-stateless sends router advertisements with the O and A bits set, and provides a stateless
 #   DHCP service. The client will use a SLAAC address, and use DHCP for other configuration information.
 #   e.g
 #     dhcp_range =>  => ['1234::, ra-stateless'],
 #
-#   Example:
 #   Do stateless DHCP, SLAAC, and generate DNS names for SLAAC addresses from DHCPv4 leases.
 #   
 #     dhcp_range => ['1234::, ra-stateless, ra-names'],
@@ -372,7 +314,6 @@
 #   the machine running dnsmasq is sent as recursive DNS server. If provided, the DHCPv6 options
 #   dns-server and domain-search are used for the DNS server (RDNSS) and the domain search list (DNSSL). 
 #
-#   Default value: false
 #
 # @param dhcp_host
 #   Specify per host parameters for the DHCP server. This allows a machine with a particular
@@ -389,19 +330,16 @@
 #
 #   Show one item per example, but they can be as multiple items in the `dhcp_host` attribute.
 #
-#   Example:
-#     Always allocate the host with Ethernet address 11:22:33:44:55:66, the IP address 192.168.0.60
+#   e.g Always allocate the host with Ethernet address 11:22:33:44:55:66, the IP address 192.168.0.60
 #
 #       dhcp_host => ['11:22:33:44:55:66,192.168.0.60'],
 #
-#   Example:
-#     Always set the name of the host with hardware address, 11:22:33:44:55:66 to be "fred"
+#   e.g Always set the name of the host with hardware address, 11:22:33:44:55:66 to be "fred"
 #
 #       dhcp_host => ['11:22:33:44:55:66,fred'],
 #
-#   Example:
-#     Always give the host with Ethernet address 11:22:33:44:55:66, the name fred and IP address
-#     192.168.0.60 and lease time 45 minutes
+#   e.g Always give the host with Ethernet address 11:22:33:44:55:66, the name fred and IP address
+#   192.168.0.60 and lease time 45 minutes
 #
 #       dhcp_host => ['11:22:33:44:55:66,fred,192.168.0.60,45m'],
 #
@@ -502,7 +440,6 @@
 #
 #     dhcp_vendorclass => ['set:red,Linux'],
 #
-#   Default value: undef
 #
 # @param dhcp_userclass
 #   Map from a user-class string to a tag (with substring matching, like vendor classes).
@@ -519,7 +456,6 @@
 #
 #     dhcp_userclass => ['set:red,accounts'],
 #
-#   Default value: undef
 #
 # @param dhcp_mac
 #   Map from a MAC address to a tag. The MAC address may include wildcards. For example,
@@ -532,7 +468,6 @@
 #
 #     set:<tag>,<MAC address>
 #
-#   Default value: undef
 #
 # @param read_ethers
 #   Read /etc/ethers for information about hosts for the DHCP server. The format of /etc/ethers is
@@ -540,7 +475,6 @@
 #   these lines have exactly the same effect as `dhcp_host` options containing the same information.
 #   /etc/ethers is re-read when dnsmasq receives SIGHUP. IPv6 addresses are NOT read from /etc/ethers. 
 #
-#   Default value: false
 #
 # @param dhcp_option
 #   Specify different or extra options to DHCP clients. By default, dnsmasq sends some standard options
@@ -586,7 +520,6 @@
 #   For instance when using option 66 to send a literal IP address as TFTP server name, it is necessary 
 #   to do dhcp_option = ['66,"1.2.3.4"'].
 #
-#   Default value: undef
 # 
 #   Example:
 #     Override the default route supplied by dnsmasq, which assumes the router is the same machine as
@@ -724,8 +657,6 @@
 #   Item syntax in this attribute:
 #   
 #     [tag:<tag>,[tag:<tag>,]][encap:<opt>,][vi-encap:<enterprise>,][vendor:[<vendor-class>],]<opt>,[<value>[,<value>]]
-#
-#   Default value: undef
 # 
 #   Send options to PXELinux. Note that we need to send the options even though they don't appear in
 #   the parameter request list, so we need to use dhcp-option-force here.
@@ -761,7 +692,6 @@
 #
 #     [tag:<tag>,]<filename>,[<servername>[,<server address>|<tftp_servername>]]
 #
-#   Default value: undef
 #
 #   Example:
 #     Set the boot filename for netboot/PXE. You will only need this if you want to boot machines over
@@ -824,7 +754,6 @@
 #
 #     set:<tag>,<option number>|option:<option name>|vi-encap:<enterprise>[,<value>]
 #
-#   Default value: undef
 #
 #   Example:
 #
@@ -848,7 +777,6 @@
 #
 #     [tag:<tag>,]<prompt>[,<timeout>]
 #
-#   Default value: undef
 #
 #   Example:
 #
@@ -911,8 +839,6 @@
 #
 #     enable-tftp[=<interface>[,<interface>]]
 #
-#   Default value: undef
-#
 #   Enable the TFTP server function. This is deliberately limited to that needed to net-boot a client.
 #   Only reading is allowed; the tsize and blksize extensions are supported (tsize is only supported in
 #   octet mode). Without an argument, the TFTP service is provided to the same set of interfaces as DHCP
@@ -928,15 +854,11 @@
 #
 #     <directory>[,<interface>]
 #
-#   Default value: undef
-#
 #   e.g
 #     tftp_root => '/var/ftpd',
 #
 # @param tftp_no_fail
 #   Do not abort startup if specified tftp root directories are inaccessible.
-#
-#   Default value: false
 #
 # @param tftp_secure
 #   Enable TFTP secure mode: without this, any file which is readable by the dnsmasq process under
@@ -947,28 +869,20 @@
 #   enabled, and certainly not without specifying --tftp-root. Doing so can expose any world-readable
 #   file on the server to any host on the net. 
 #
-#   Default value: false
-#
 # @param tftp_no_blocksize
 #   Stop the TFTP server from negotiating the "blocksize" option with a client. Some buggy clients
 #   request this option but then behave badly when it is granted. 
-#
-#   Default value: true
 #
 # @param dhcp_lease_max
 #   Limits dnsmasq to the specified maximum number of DHCP leases. The default is 150. This limit is
 #   to prevent DoS attacks from hosts which create thousands of leases and use lots of memory in the
 #   dnsmasq process. 
 #
-#   Default value: undef
-#
 # @param dhcp_leasefile
 #   The DHCP server needs somewhere on disk to keep its lease database. This defaults to a sane
 #   location, but if you want to change it, use the line below.
 #
 #     dhcp_leasefile => '/var/lib/misc/dnsmasq.leases',
-#
-#   Default value: undef
 #
 # @param dhcp_authoritative
 #   Set the DHCP server to authoritative mode. In this mode it will barge in and take over the lease
@@ -978,16 +892,12 @@
 #   accidentally. The ISC server uses the same option, and this URL provides more information:
 #   http://www.isc.org/files/auth.html
 #
-#   Default value: false
-#
 # @param dhcp_rapid_commit
 #   Set the DHCP server to enable DHCPv4 Rapid Commit Option per RFC 4039. In this mode it will
 #   respond to a DHCPDISCOVER message including a Rapid Commit option with a DHCPACK including a
 #   Rapid Commit option and fully committed address and configuration information. This must only
 #   be enabled if either the server is the only server for the subnet, or multiple servers are present
 #   and they each commit a binding for all clients.
-#
-#   Default value: false
 #
 # @param dhcp_script
 #   Run an executable when a DHCP lease is created or destroyed. The path must be an absolute pathname,
@@ -997,8 +907,6 @@
 #   Example:
 #     dhcp_script => '/bin/echo',
 #
-#   Default value: undef
-#
 # @param cache_size
 #   Set the size of dnsmasq's cache. The default is 150 names. Setting the cache size to zero disables
 #   caching. Note: huge cache size impacts performance.
@@ -1006,13 +914,9 @@
 #   Example:
 #     cache_size => 200,
 #
-#   Default value: undef
-#
 # @param no_negcache
 #   Disable negative caching. Negative caching allows dnsmasq to remember "no such domain" answers
 #   from upstream nameservers and answer identical queries without forwarding them again. 
-#
-#   Default value: false
 #
 # @param local_ttl
 #   When replying with information from /etc/hosts or configuration or the DHCP leases file dnsmasq
@@ -1020,8 +924,6 @@
 #   the information. This is the correct thing to do in almost all situations. This option allows a 
 #   time-to-live (in seconds) to be given for these replies. This will reduce the load on the server
 #   at the expense of clients using stale data under some circumstances. 
-#
-#   Default value: undef
 #
 # @param bogus_nxdomain
 #   Transform replies which contain the specified address or subnet into "No such domain" replies.
@@ -1034,8 +936,6 @@
 #   Item syntax in this attribute:
 #
 #     <ipaddr>[/prefix]
-#
-#   Default value: undef
 #
 #   Example:
 #
@@ -1053,8 +953,6 @@
 #  
 #     [<old-ip>]|[<start-ip>-<end-ip>],<new-ip>[,<mask>]
 #
-#   Default value: undef
-#
 #   Examples:
 #     dns_alias => ['1.2.3.4,5.6.7.8'],
 #     dns_alias => ['1.2.3.0,5.6.7.0,255.255.255.0'],
@@ -1064,8 +962,6 @@
 #   Item syntax in this attribute:
 #  
 #     <mx name>[[,<hostname>],<preference>]
-#
-#   Default value: undef
 #
 #   Return an MX record named <mx name> pointing to the given hostname (if given), or the host 
 #   specified in the --mx-target switch or, if that switch is not given, the host on which dnsmasq
@@ -1083,8 +979,6 @@
 #   is given, but not --mx-host, then dnsmasq returns a MX record containing the MX target for MX
 #   queries on the hostname of the machine on which dnsmasq is running.
 #
-#   Default value: undef
-#
 #   Example:
 #     mx_target => 'servermachine.com',
 #
@@ -1092,13 +986,9 @@
 #   Return an MX record pointing to the host given by --mx-target (or the machine on which dnsmasq is
 #   running) for each local machine. Local machines are those in /etc/hosts or with DHCP leases. 
 #
-#   Default value: false
-#
 # @param selfmx
 #   Return an MX record pointing to itself for each local machine. Local machines are those in /etc/hosts
 #   or with DHCP leases. 
-#
-#   Default value: false
 #
 # @param dns_srv_host
 #   Return a SRV DNS record. See RFC2782 for details. These are useful if you want to serve ldap
@@ -1107,8 +997,6 @@
 #   Item syntax in this attribute:
 #
 #     <_service>.<_prot>.[<domain>],[<target>[,<port>[,<priority>[,<weight>]]]]
-#
-#   Default value: undef
 #
 #   If the domain part if missing from the name (so that is just has the service and protocol sections)
 #   then the domain given by the domain=config option is used. (Note that expand-hosts does not need to
@@ -1159,8 +1047,6 @@
 #
 #     <name>[[,<text>],<text>]
 #
-#   Default value: undef
-#
 #   Example SPF.
 #     txt_record => ['example.com,"v=spf1 a -all"'],
 #
@@ -1171,8 +1057,6 @@
 #   Item syntax in this attribute:
 #
 #     <cname>,[<cname>,]<target>[,<TTL>]
-#
-#   Default value: undef
 #
 #   Return a CNAME record which indicates that <cname> is really <target>. There is a significant
 #   limitation on the target; it must be a DNS record which is known to dnsmasq and NOT a DNS record
@@ -1196,12 +1080,8 @@
 #
 #   The value for this attribute can be one of: true, false, 'extra'
 #
-#   Default value: false
-#
 # @param log_dhcp
 #   Extra logging for DHCP: log all the options sent to DHCP clients and the tags used to determine them. 
-#
-#   Default value: false
 #
 # @param dhcp_name_match
 #   Set the tag if the given name is supplied by a DHCP client. There may be a single trailing 
@@ -1212,8 +1092,6 @@
 #   Item syntax in this attribute:
 #
 #     set:<tag>,<name>[*]
-#
-#   Default value: false
 #
 #   Example:
 #     dhcp_name_match => ['set:wpad-ignore,wpad'],
@@ -1226,8 +1104,6 @@
 #
 #   This attribute syntax:
 #      dhcp-ignore-names[=tag:<tag>[,tag:<tag>]]
-#
-#   Default value: undef
 #
 #   Example:
 #     dhcp_ignore_names => 'dhcp-ignore-names',
