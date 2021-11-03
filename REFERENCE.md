@@ -973,7 +973,7 @@ Data type: `Enum['present','file','absent']`
 
 Whether the config file should exist. Possible values are present, absent, and file.
 
-Default value: 'present'
+Default value: `'present'`
 
 Default value: `'present'`
 
@@ -983,7 +983,7 @@ Data type: `Integer`
 
 The priority of file in /etc/dnsmasq.d/ directory, which is part of the configuration file name.
 
-Default value: 10
+Default value: `10`
 
 Default value: `10`
 
@@ -1000,7 +1000,7 @@ Allowed values are:
   - `file`: URIs, which behave the same as local file paths.
   - `http(s)`: URIs, which point to files served by common web servers.
 
-Default value: undef
+Default value: `undef`
 
 Default value: ``undef``
 
@@ -1010,8 +1010,6 @@ Data type: `Optional[String[1]]`
 
 Listen on this specific port instead of the standard DNS port (53). Setting this to zero completely disables
 DNS function, leaving only DHCP and/or TFTP.
-
-Default value: undef
 
 Default value: ``undef``
 
@@ -1023,7 +1021,7 @@ Specify the userid  to which dnsmasq will change after startup. Dnsmasq must nor
 but it will drop root privileges after startup by changing id to another user. Normally this user is "dnsmasq"
 but that can be over-ridden with this switch.
 
-Default value: undef
+Default value: `undef`
 
 Default value: ``undef``
 
