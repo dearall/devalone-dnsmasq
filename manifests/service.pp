@@ -1,6 +1,6 @@
-# @summary A short summary of the purpose of this class
+# @summary Manage the dnsmasq service
 #
-# A description of what this class does
+# This class use the dnsmasq params to control the dnsmasq service running.
 #
 # @example
 #   include dnsmasq::service

@@ -6,12 +6,12 @@
 
 ### Classes
 
-* [`dnsmasq`](#dnsmasq): A short summary of the purpose of this class
+* [`dnsmasq`](#dnsmasq): Manage dnsmasq package install, configure file and service.
 * [`dnsmasq::config`](#dnsmasqconfig): A short summary of the purpose of this class
-* [`dnsmasq::install`](#dnsmasqinstall): A short summary of the purpose of this class
+* [`dnsmasq::install`](#dnsmasqinstall): Install dnsmasq package
 * [`dnsmasq::params`](#dnsmasqparams): A short summary of the purpose of this class
-* [`dnsmasq::reload`](#dnsmasqreload): A short summary of the purpose of this class
-* [`dnsmasq::service`](#dnsmasqservice): A short summary of the purpose of this class
+* [`dnsmasq::reload`](#dnsmasqreload): Send a HUP signal to any dnsmasq processes in order to reload changes.
+* [`dnsmasq::service`](#dnsmasqservice): Manage the dnsmasq service
 
 ### Defined types
 
@@ -21,20 +21,28 @@
 
 ### <a name="dnsmasq"></a>`dnsmasq`
 
-A description of what this class does
+The dnsmasq module install, config, and run the service. The main class is dnsmasq, and it
+has a defined type dnsmasq::conf, you can use either of them to control the dnsmasq package.
 
 #### Examples
 
 ##### 
 
 ```puppet
-include dnsmasq
+class { 'dnsmasq':
+  resolv_file        => '/etc/resolv.conf.dnsmasq',
+  local_only_domains => ['/example.org/'],
+}
 ```
 
 #### Parameters
 
 The following parameters are available in the `dnsmasq` class:
 
+* [`package_manage`](#package_manage)
+* [`package_ensure`](#package_ensure)
+* [`service_control`](#service_control)
+* [`purge_config_dir`](#purge_config_dir)
 * [`conf_ensure`](#conf_ensure)
 * [`conf_priority`](#conf_priority)
 * [`conf_source`](#conf_source)
@@ -88,6 +96,7 @@ The following parameters are available in the `dnsmasq` class:
 * [`dhcp_lease_max`](#dhcp_lease_max)
 * [`dhcp_leasefile`](#dhcp_leasefile)
 * [`dhcp_authoritative`](#dhcp_authoritative)
+* [`dhcp_rapid_commit`](#dhcp_rapid_commit)
 * [`dhcp_script`](#dhcp_script)
 * [`cache_size`](#cache_size)
 * [`no_negcache`](#no_negcache)
@@ -99,22 +108,50 @@ The following parameters are available in the `dnsmasq` class:
 * [`localmx`](#localmx)
 * [`selfmx`](#selfmx)
 * [`dns_srv_host`](#dns_srv_host)
+* [`ptr_record`](#ptr_record)
 * [`txt_record`](#txt_record)
 * [`dns_cname`](#dns_cname)
 * [`log_queries`](#log_queries)
 * [`log_dhcp`](#log_dhcp)
 * [`dhcp_name_match`](#dhcp_name_match)
 * [`dhcp_ignore_names`](#dhcp_ignore_names)
-* [`package_ensure`](#package_ensure)
-* [`package_manage`](#package_manage)
-* [`service_control`](#service_control)
-* [`purge_config_dir`](#purge_config_dir)
-* [`dhcp_rapid_commit`](#dhcp_rapid_commit)
-* [`ptr_record`](#ptr_record)
+
+##### <a name="package_manage"></a>`package_manage`
+
+Data type: `Boolean`
+
+Whether to manage the dnsmasq package. Default value: true.
+
+##### <a name="package_ensure"></a>`package_ensure`
+
+Data type: `String`
+
+Whether to install the dnsmasq package, and what version to install. Values: 'present', 'installed',
+'absent', 'purged', 'disabled','latest', or a specific version number.
+
+Default value: 'installed'
+
+##### <a name="service_control"></a>`service_control`
+
+Data type: `Boolean`
+
+Whether to manage the dnsmasq service.
+
+Default value: true
+
+##### <a name="purge_config_dir"></a>`purge_config_dir`
+
+Data type: `Boolean`
+
+Whether to purge the config directory: '/etc/dnsmasq.d/'.
+
+Default value: false
 
 ##### <a name="conf_ensure"></a>`conf_ensure`
 
 Data type: `Enum['present','file','absent']`
+
+Whether the config file should exist. Possible values are present, absent, and file.
 
 Mapping to dnsmasq::conf `ensure` attribute.
 
@@ -122,11 +159,22 @@ Mapping to dnsmasq::conf `ensure` attribute.
 
 Data type: `Integer`
 
+The priority of file in /etc/dnsmasq.d/ directory, which is part of the configuration file name.
+
 Mapping to dnsmasq::conf `priority` attribute.
 
 ##### <a name="conf_source"></a>`conf_source`
 
 Data type: `Optional[Stdlib::Absolutepath]`
+
+A source file, which will be copied into the configuration file. If this attribute is not `undef`, the
+other detail attributes that based on template to build the configuration file's content are ignored.
+This attribute is for you that have some validate configuration files.
+Allowed values are:
+  - `puppet`: URIs, which point to files in modules or Puppet file server mount points.
+  - Fully qualified paths to locally available files (including files on NFS shares or Windows mapped drives).
+  - `file`: URIs, which behave the same as local file paths.
+  - `http(s)`: URIs, which point to files served by common web servers.
 
 Mapping to dnsmasq::conf `source` attribute.
 
@@ -134,11 +182,18 @@ Mapping to dnsmasq::conf `source` attribute.
 
 Data type: `Optional[String[1]]`
 
+Listen on this specific port instead of the standard DNS port (53). Setting this to zero completely disables
+DNS function, leaving only DHCP and/or TFTP.
+
 Mapping to dnsmasq::conf `port` attribute.
 
 ##### <a name="user"></a>`user`
 
 Data type: `Optional[String[1]]`
+
+Specify the userid  to which dnsmasq will change after startup. Dnsmasq must normally be started as root,
+but it will drop root privileges after startup by changing id to another user. Normally this user is "dnsmasq"
+but that can be over-ridden with this switch.
 
 Mapping to dnsmasq::conf `user` attribute.
 
@@ -146,11 +201,16 @@ Mapping to dnsmasq::conf `user` attribute.
 
 Data type: `Optional[String[1]]`
 
+Specify the group which dnsmasq will run as. The default is "dnsmasq".
+
 Mapping to dnsmasq::conf `group` attribute.
 
 ##### <a name="domain_needed"></a>`domain_needed`
 
 Data type: `Boolean`
+
+Tells dnsmasq to never forward A or AAAA queries for plain names, without dots or domain parts, to
+upstream nameservers. If the name is not known from /etc/hosts or DHCP then a "not found" answer is returned.
 
 Mapping to dnsmasq::conf `domain_needed` attribute.
 
@@ -158,11 +218,18 @@ Mapping to dnsmasq::conf `domain_needed` attribute.
 
 Data type: `Boolean`
 
+Bogus private reverse lookups. All reverse lookups for private IP ranges (ie 192.168.x.x, etc)
+which are not found in /etc/hosts or the DHCP leases file are answered with "no such domain"
+rather than being forwarded upstream. The set of prefixes affected is the list given in RFC6303,
+for IPv4 and IPv6.
+
 Mapping to dnsmasq::conf `bogus_priv` attribute.
 
 ##### <a name="dnssec"></a>`dnssec`
 
 Data type: `Boolean`
+
+Enable DNSSEC validation and caching.
 
 Mapping to dnsmasq::conf `dnssec` attribute.
 
@@ -170,11 +237,21 @@ Mapping to dnsmasq::conf `dnssec` attribute.
 
 Data type: `Boolean`
 
+Replies which are not DNSSEC signed may be legitimate, because the domain is unsigned, or may be forgeries.
+Setting this option tells dnsmasq to check that an unsigned reply is OK, by finding a secure proof that a DS
+record somewhere between the root and the domain does not exist.
+The cost of setting this is that even queries in unsigned domains will need one or more extra DNS queries to verify.
+
 Mapping to dnsmasq::conf `dnssec_check_unsigned` attribute.
 
 ##### <a name="filterwin2k"></a>`filterwin2k`
 
 Data type: `Boolean`
+
+Setup this attr true to filter useless windows-originated DNS requests which can trigger dial-on-demand links
+needlessly. Note that (amongst other things) this blocks all SRV requests, so don't use it if you use eg Kerberos,
+SIP, XMMP or Google-talk. This option only affects forwarding, SRV records originating for dnsmasq (via srv-host=
+lines) are not suppressed by it.
 
 Mapping to dnsmasq::conf `filterwin2k` attribute.
 
@@ -182,11 +259,27 @@ Mapping to dnsmasq::conf `filterwin2k` attribute.
 
 Data type: `Optional[Stdlib::Absolutepath]`
 
+Read the IP addresses of the upstream nameservers from <file>, instead of /etc/resolv.conf. For the
+format of this file see resolv.conf(5).
+The only lines relevant to dnsmasq are nameserver ones. Dnsmasq can be told to poll more than one
+resolv.conf file, the first file name specified overrides the default, subsequent ones add to the
+list. This is only allowed when polling; the file with the currently latest modification time is
+the one used.
+Change this line if you want dns to get its upstream servers from somewhere other that /etc/resolv.conf.
+For example, set this attr's value: '/etc/resolv.conf.dnsmasq':
+
+resolv_file => '/etc/resolv.conf.dnsmasq',
+
 Mapping to dnsmasq::conf `resolv_file` attribute.
 
 ##### <a name="strict_order"></a>`strict_order`
 
 Data type: `Boolean`
+
+By  default,  dnsmasq  will  send queries to any of the upstream servers it knows about and
+tries to favour servers to are  known to  be  up. Uncommenting this forces dnsmasq to try
+each query with  each  server  strictly in the order they appear in /etc/resolv.conf
+严格按照 resolv.conf 中的顺序进行查找
 
 Mapping to dnsmasq::conf `strict_order` attribute.
 
@@ -194,11 +287,20 @@ Mapping to dnsmasq::conf `strict_order` attribute.
 
 Data type: `Boolean`
 
+If you don't want dnsmasq to read /etc/resolv.conf or any other file, getting its servers
+from this file instead (see below). Get upstream servers only from the command line or the
+dnsmasq configuration file.
+不读取 resolv-file 来确定上游服务器
+
 Mapping to dnsmasq::conf `no_resolv` attribute.
 
 ##### <a name="no_poll"></a>`no_poll`
 
 Data type: `Boolean`
+
+If you don't want dnsmasq to poll /etc/resolv.conf or other resolv files for changes and
+re-read them then set this attribute true.
+不检测 /etc/resolv.conf 的变化
 
 Mapping to dnsmasq::conf `no_poll` attribute.
 
@@ -206,11 +308,19 @@ Mapping to dnsmasq::conf `no_poll` attribute.
 
 Data type: `Optional[Array[String[1]]]`
 
+Add other name servers here, with domain specs if they are for non-public domains.
+e.g:
+    other_name_servers => ['/subdomain1.example.org/192.168.0.1', '/subdomain2.example.org/192.168.0.2'],
+
 Mapping to dnsmasq::conf `other_name_servers` attribute.
 
 ##### <a name="ptr_nameservers"></a>`ptr_nameservers`
 
 Data type: `Optional[Array[String[1]]]`
+
+Example of routing PTR queries to nameservers: this will send all address->name queries for 192.168.3/24 to
+nameserver 10.1.2.3, 192.168.4/24 to nameserver 10.1.2.4:
+  ptr_nameservers => ['/3.168.192.in-addr.arpa/10.1.2.3', '/4.168.192.in-addr.arpa/10.1.2.4'],
 
 Mapping to dnsmasq::conf `ptr_nameservers` attribute.
 
@@ -218,11 +328,22 @@ Mapping to dnsmasq::conf `ptr_nameservers` attribute.
 
 Data type: `Optional[Array[String[1]]]`
 
+Add local-only domains here, queries in these domains are answered from /etc/hosts or DHCP only.
+e.g:
+    local_only_domains => ['/local-example1.org/', '/local-example2.org/'],
+
 Mapping to dnsmasq::conf `local_only_domains` attribute.
 
 ##### <a name="domains_force_to_ip"></a>`domains_force_to_ip`
 
 Data type: `Optional[Array[String[1]]]`
+
+Add domains which you want to force to an IP address here.
+The example below send any host in double-click.net to a local web-server.
+  domains_force_to_ip => ['/double-click.net/127.0.0.1'],
+
+work with IPv6 addresses too.
+  domains_force_to_ip => ['/www.thekelleys.org.uk/fe80::20d:60ff:fe36:f83'],
 
 Mapping to dnsmasq::conf `domains_force_to_ip` attribute.
 
@@ -230,11 +351,26 @@ Mapping to dnsmasq::conf `domains_force_to_ip` attribute.
 
 Data type: `Optional[String[1]]`
 
+Places the resolved IP addresses of queries for one or more domains in the specified Netfilter
+IP set. If multiple setnames are given, then the addresses are placed in each of them, subject
+to the limitations of an IP set (IPv4 addresses cannot be stored in an IPv6 IP set and vice versa).
+Domains and subdomains are matched in the same way as --address. These IP sets must already exist.
+See ipset(8) for more details.
+e.g. add the IPs of all queries to yahoo.com, google.com, and their subdomains to the vpn and
+search ipsets:
+
+  ipset => '/yahoo.com/google.com/vpn,search',
+
 Mapping to dnsmasq::conf `ipset` attribute.
 
 ##### <a name="queries_via_eth"></a>`queries_via_eth`
 
 Data type: `Optional[Array[String[1]]]`
+
+You can control how dnsmasq talks to a server by this attribute, or the `queries_via_ip` attribute
+shows below. e.g this forces queries to 10.1.2.3 to be routed via eth1:
+
+  queries_via_eth => ['10.1.2.3@eth1'],
 
 Mapping to dnsmasq::conf `queries_via_eth` attribute.
 
@@ -242,11 +378,21 @@ Mapping to dnsmasq::conf `queries_via_eth` attribute.
 
 Data type: `Optional[Array[String[1]]]`
 
+This sets the source (ie local) address used to talk to 10.1.2.3 to 192.168.1.1 port 55 (there
+must be an interface with that IP on the machine, obviously).
+
+  queries_via_ip => ['10.1.2.3@192.168.1.1#55'],
+
 Mapping to dnsmasq::conf `queries_via_ip` attribute.
 
 ##### <a name="interfaces"></a>`interfaces`
 
 Data type: `Optional[Array[String[1]]]`
+
+If you want dnsmasq to listen for DHCP and DNS requests only on specified interfaces (and the
+loopback) give the name of the interface (eg eth0, eth1) here.
+
+  interfaces => ['eth0', 'eth1'],
 
 Mapping to dnsmasq::conf `interfaces` attribute.
 
@@ -254,11 +400,19 @@ Mapping to dnsmasq::conf `interfaces` attribute.
 
 Data type: `Optional[Array[String[1]]]`
 
+Or you can specify which interface _not_ to listen on
+
+  except_interfaces => ['eth1'],
+
 Mapping to dnsmasq::conf `except_interfaces` attribute.
 
 ##### <a name="listen_addresses"></a>`listen_addresses`
 
 Data type: `Optional[Array[String[1]]]`
+
+Or which to listen on by address (remember to include 127.0.0.1 if you use this.)
+
+  listen_addresses => ['192.168.0.2,127.0.0.1'],
 
 Mapping to dnsmasq::conf `listen_addresses` attribute.
 
@@ -266,11 +420,22 @@ Mapping to dnsmasq::conf `listen_addresses` attribute.
 
 Data type: `Optional[Array[String[1]]]`
 
+If you want dnsmasq to provide only DNS service on an interface, configure it as shown above,
+and then use the following line to disable DHCP and TFTP on it.
+
+  no_dhcp_interfaces => ['eth0, eth1'],
+
 Mapping to dnsmasq::conf `no_dhcp_interfaces` attribute.
 
 ##### <a name="bind_interfaces"></a>`bind_interfaces`
 
 Data type: `Boolean`
+
+On systems which support it, dnsmasq binds the wildcard address, even when it is listening on
+only some interfaces. It then discards requests that it shouldn't reply to. This has the advantage
+of working even when interfaces come and go and change address. If you want dnsmasq to really bind
+only the interfaces it is listening on, uncomment this option. About the only time you may need this
+is when running another nameserver on the same machine.
 
 Mapping to dnsmasq::conf `bind_interfaces` attribute.
 
@@ -278,17 +443,29 @@ Mapping to dnsmasq::conf `bind_interfaces` attribute.
 
 Data type: `Boolean`
 
+If you don't want dnsmasq to read /etc/hosts, set no_hosts to true.
+
 Mapping to dnsmasq::conf `no_hosts` attribute.
 
 ##### <a name="addn_hosts"></a>`addn_hosts`
 
 Data type: `Optional[Array[Stdlib::Absolutepath]]`
 
+Additional hosts file. Read the specified file as well as /etc/hosts. If `no_hosts` is given,
+read only the specified file. This option may be repeated for more than one additional hosts file.
+If a directory is given, then read all the files contained in that directory in alphabetical order.
+e.g
+
+  addn_hosts => ['/etc/banner_add_hosts1', '/etc/banner_add_hosts2'],
+
 Mapping to dnsmasq::conf `addn_hosts` attribute.
 
 ##### <a name="expand_hosts"></a>`expand_hosts`
 
 Data type: `Boolean`
+
+Set this (and domain: see below) if you want to have a domain automatically added to simple names
+in a hosts-file.
 
 Mapping to dnsmasq::conf `expand_hosts` attribute.
 
@@ -430,6 +607,18 @@ Data type: `Boolean`
 
 Mapping to dnsmasq::conf `dhcp_authoritative` attribute.
 
+##### <a name="dhcp_rapid_commit"></a>`dhcp_rapid_commit`
+
+Data type: `Boolean`
+
+Set the DHCP server to enable DHCPv4 Rapid Commit Option per RFC 4039. In this mode it will
+respond to a DHCPDISCOVER message including a Rapid Commit option with a DHCPACK including a
+Rapid Commit option and fully committed address and configuration information. This must only
+be enabled if either the server is the only server for the subnet, or multiple servers are present
+and they each commit a binding for all clients.
+
+Mapping to dnsmasq::conf `dhcp_rapid_commit` attribute.
+
 ##### <a name="dhcp_script"></a>`dhcp_script`
 
 Data type: `Optional[String[1]]`
@@ -496,6 +685,12 @@ Data type: `Optional[Array[String[1]]]`
 
 Mapping to dnsmasq::conf `dns_srv_host` attribute.
 
+##### <a name="ptr_record"></a>`ptr_record`
+
+Data type: `Optional[String[1]]`
+
+Mapping to dnsmasq::conf `ptr_record` attribute.
+
 ##### <a name="txt_record"></a>`txt_record`
 
 Data type: `Optional[Array[String[1]]]`
@@ -532,42 +727,6 @@ Data type: `Optional[String[1]]`
 
 Mapping to dnsmasq::conf `dhcp_ignore_names` attribute.
 
-##### <a name="package_ensure"></a>`package_ensure`
-
-Data type: `String[1]`
-
-
-
-##### <a name="package_manage"></a>`package_manage`
-
-Data type: `Boolean`
-
-
-
-##### <a name="service_control"></a>`service_control`
-
-Data type: `Boolean`
-
-
-
-##### <a name="purge_config_dir"></a>`purge_config_dir`
-
-Data type: `Boolean`
-
-
-
-##### <a name="dhcp_rapid_commit"></a>`dhcp_rapid_commit`
-
-Data type: `Boolean`
-
-
-
-##### <a name="ptr_record"></a>`ptr_record`
-
-Data type: `Optional[String[1]]`
-
-
-
 ### <a name="dnsmasqconfig"></a>`dnsmasq::config`
 
 A description of what this class does
@@ -582,7 +741,7 @@ include dnsmasq::config
 
 ### <a name="dnsmasqinstall"></a>`dnsmasq::install`
 
-A description of what this class does
+This class use the dnsmasq params to install or uninstall the dnsmasq package, and manage the config dir.
 
 #### Examples
 
@@ -606,7 +765,16 @@ include dnsmasq::params
 
 ### <a name="dnsmasqreload"></a>`dnsmasq::reload`
 
-A description of what this class does
+Send a HUP signal to any dnsmasq processes in order to reload changes from
+`/etc/hosts` and `/etc/ethers` and any file given by `--dhcp-hostsfile`,
+`--dhcp-optsfile` or `--addn-hosts`.
+
+This is necessary because the SysV script on Ubuntu doesn't provide a
+reload command. It will not reload configuration changes. It will also
+send a HUP to *all* dnsmasq processes, of which there may be more than
+one, however that should be harmless.
+
+This clas is from mvasilenko-dnsmasq, thanks.
 
 #### Examples
 
@@ -618,7 +786,7 @@ include dnsmasq::reload
 
 ### <a name="dnsmasqservice"></a>`dnsmasq::service`
 
-A description of what this class does
+This class use the dnsmasq params to control the dnsmasq service running.
 
 #### Examples
 
@@ -711,25 +879,15 @@ values, entries are collected as they occur in files sorted by `priority` values
 
     dhcp_range => ['1234::, ra-stateless, ra-names'],
 
-param dhcp_mac
-  Map from a MAC address to a tag. The MAC address may include wildcards. For example,
-
-    dhcp_mac => ['set:3com,01:34:23:*:*:*'],
-
-  will set the tag "3com" for any host whose MAC address matches the pattern.
-
-  Item syntax in this attribute::
-
-    set:<tag>,<MAC address>
-
-  Default value: undef
-
 #### Examples
 
 ##### 
 
 ```puppet
-dnsmasq::conf { 'dnsmasq': }
+dnsmasq::conf { 'dnsmasq':
+  resolv_file        => '/etc/resolv.conf.dnsmasq',
+  local_only_domains => ['/example.org/'],
+}
 ```
 
 #### Parameters
@@ -773,6 +931,7 @@ The following parameters are available in the `dnsmasq::conf` defined type:
 * [`dhcp_ignore`](#dhcp_ignore)
 * [`dhcp_vendorclass`](#dhcp_vendorclass)
 * [`dhcp_userclass`](#dhcp_userclass)
+* [`dhcp_mac`](#dhcp_mac)
 * [`read_ethers`](#read_ethers)
 * [`dhcp_option`](#dhcp_option)
 * [`dhcp_option_force`](#dhcp_option_force)
@@ -798,6 +957,7 @@ The following parameters are available in the `dnsmasq::conf` defined type:
 * [`mx_host`](#mx_host)
 * [`mx_target`](#mx_target)
 * [`localmx`](#localmx)
+* [`selfmx`](#selfmx)
 * [`dns_srv_host`](#dns_srv_host)
 * [`ptr_record`](#ptr_record)
 * [`txt_record`](#txt_record)
@@ -806,14 +966,12 @@ The following parameters are available in the `dnsmasq::conf` defined type:
 * [`log_dhcp`](#log_dhcp)
 * [`dhcp_name_match`](#dhcp_name_match)
 * [`dhcp_ignore_names`](#dhcp_ignore_names)
-* [`dhcp_mac`](#dhcp_mac)
-* [`selfmx`](#selfmx)
 
 ##### <a name="ensure"></a>`ensure`
 
 Data type: `Enum['present','file','absent']`
 
-Whether the file should exist. Possible values are present, absent, and file.
+Whether the config file should exist. Possible values are present, absent, and file.
 
 Default value: 'present'
 
@@ -883,7 +1041,8 @@ Default value: ``undef``
 
 Data type: `Boolean`
 
-Never forward plain names (without a dot or domain part)
+Tells dnsmasq to never forward A or AAAA queries for plain names, without dots or domain parts, to
+upstream nameservers. If the name is not known from /etc/hosts or DHCP then a "not found" answer is returned.
 
 Default value: true
 
@@ -893,7 +1052,10 @@ Default value: ``true``
 
 Data type: `Boolean`
 
-Never forward addresses in the non-routed address spaces.
+Bogus private reverse lookups. All reverse lookups for private IP ranges (ie 192.168.x.x, etc)
+which are not found in /etc/hosts or the DHCP leases file are answered with "no such domain"
+rather than being forwarded upstream. The set of prefixes affected is the list given in RFC6303,
+for IPv4 and IPv6.
 
 Default value: true
 
@@ -1423,6 +1585,24 @@ Item syntax in this attribute::
 e.g
 
   dhcp_userclass => ['set:red,accounts'],
+
+Default value: undef
+
+Default value: ``undef``
+
+##### <a name="dhcp_mac"></a>`dhcp_mac`
+
+Data type: `Optional[Array[String[1]]]`
+
+Map from a MAC address to a tag. The MAC address may include wildcards. For example,
+
+  dhcp_mac => ['set:3com,01:34:23:*:*:*'],
+
+will set the tag "3com" for any host whose MAC address matches the pattern.
+
+Item syntax in this attribute::
+
+  set:<tag>,<MAC address>
 
 Default value: undef
 
@@ -2113,6 +2293,17 @@ Default value: false
 
 Default value: ``false``
 
+##### <a name="selfmx"></a>`selfmx`
+
+Data type: `Boolean`
+
+Return an MX record pointing to itself for each local machine. Local machines are those in /etc/hosts
+or with DHCP leases.
+
+Default value: false
+
+Default value: ``false``
+
 ##### <a name="dns_srv_host"></a>`dns_srv_host`
 
 Data type: `Optional[Array[String[1]]]`
@@ -2285,20 +2476,4 @@ Example:
   dhcp_ignore_names => 'dhcp-ignore-names=tag:wpad-ignore',
 
 Default value: ``undef``
-
-##### <a name="dhcp_mac"></a>`dhcp_mac`
-
-Data type: `Optional[Array[String[1]]]`
-
-
-
-Default value: ``undef``
-
-##### <a name="selfmx"></a>`selfmx`
-
-Data type: `Boolean`
-
-
-
-Default value: ``false``
 

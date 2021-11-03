@@ -10,10 +10,13 @@
 # values, entries are collected as they occur in files sorted by `priority` values.
 #
 # @example
-#   dnsmasq::conf { 'dnsmasq': }
+#   dnsmasq::conf { 'dnsmasq': 
+#     resolv_file        => '/etc/resolv.conf.dnsmasq',
+#     local_only_domains => ['/example.org/'],
+#   }
 #
 # @param ensure
-#   Whether the file should exist. Possible values are present, absent, and file.
+#   Whether the config file should exist. Possible values are present, absent, and file.
 #
 #   Default value: 'present'
 #
@@ -53,12 +56,16 @@
 #   Default value: undef
 #
 # @param domain_needed
-#   Never forward plain names (without a dot or domain part)
+#   Tells dnsmasq to never forward A or AAAA queries for plain names, without dots or domain parts, to
+#   upstream nameservers. If the name is not known from /etc/hosts or DHCP then a "not found" answer is returned. 
 #
 #   Default value: true
 #
 # @param bogus_priv
-#   Never forward addresses in the non-routed address spaces.
+#   Bogus private reverse lookups. All reverse lookups for private IP ranges (ie 192.168.x.x, etc) 
+#   which are not found in /etc/hosts or the DHCP leases file are answered with "no such domain" 
+#   rather than being forwarded upstream. The set of prefixes affected is the list given in RFC6303,
+#   for IPv4 and IPv6. 
 #
 #   Default value: true
 #
@@ -516,7 +523,7 @@
 #
 #   Default value: undef
 #
-# param dhcp_mac
+# @param dhcp_mac
 #   Map from a MAC address to a tag. The MAC address may include wildcards. For example,
 #
 #     dhcp_mac => ['set:3com,01:34:23:*:*:*'],
@@ -1089,6 +1096,12 @@
 #
 #   Default value: false
 #
+# @param selfmx
+#   Return an MX record pointing to itself for each local machine. Local machines are those in /etc/hosts
+#   or with DHCP leases. 
+#
+#   Default value: false
+#
 # @param dns_srv_host
 #   Return a SRV DNS record. See RFC2782 for details. These are useful if you want to serve ldap
 #   requests for Active Directory and other windows-originated DNS requests.
@@ -1273,39 +1286,39 @@ define dnsmasq::conf (
   Optional[Array[String[1]]]            $dhcp_match            = undef,
 
   #pxe
-  Optional[String[1]]             $pxe_prompt            = undef,
-  Optional[Array[String[1]]]      $pxe_service           = undef,
+  Optional[String[1]]                   $pxe_prompt            = undef,
+  Optional[Array[String[1]]]            $pxe_service           = undef,
 
   #tftp
-  Optional[Array[String[1]]]      $enable_tftp           = undef,
-  Optional[String[1]]             $tftp_root             = undef,
-  Boolean                         $tftp_no_fail          = false,
-  Boolean                         $tftp_secure           = false,
-  Boolean                         $tftp_no_blocksize     = true,
+  Optional[Array[String[1]]]            $enable_tftp           = undef,
+  Optional[String[1]]                   $tftp_root             = undef,
+  Boolean                               $tftp_no_fail          = false,
+  Boolean                               $tftp_secure           = false,
+  Boolean                               $tftp_no_blocksize     = true,
 
-  Optional[Integer]               $dhcp_lease_max        = undef,
-  Optional[String[1]]             $dhcp_leasefile        = undef,
-  Boolean                         $dhcp_authoritative    = false,
-  Boolean                         $dhcp_rapid_commit     = false,
-  Optional[String[1]]             $dhcp_script           = undef,
-  Optional[Integer]               $cache_size            = undef,
-  Boolean                         $no_negcache           = false,
-  Optional[Integer]               $local_ttl             = undef,
-  Optional[Array[String[1]]]      $bogus_nxdomain        = undef,
-  Optional[Array[String[1]]]      $dns_alias             = undef,
+  Optional[Integer]                     $dhcp_lease_max        = undef,
+  Optional[String[1]]                   $dhcp_leasefile        = undef,
+  Boolean                               $dhcp_authoritative    = false,
+  Boolean                               $dhcp_rapid_commit     = false,
+  Optional[String[1]]                   $dhcp_script           = undef,
+  Optional[Integer]                     $cache_size            = undef,
+  Boolean                               $no_negcache           = false,
+  Optional[Integer]                     $local_ttl             = undef,
+  Optional[Array[String[1]]]            $bogus_nxdomain        = undef,
+  Optional[Array[String[1]]]            $dns_alias             = undef,
   #mx
-  Optional[Array[String[1]]]      $mx_host               = undef,
-  Optional[String[1]]             $mx_target             = undef,
-  Boolean                         $localmx               = false,
-  Boolean                         $selfmx                = false,
-  Optional[Array[String[1]]]      $dns_srv_host          = undef,
-  Optional[String[1]]             $ptr_record            = undef,
-  Optional[Array[String[1]]]      $txt_record            = undef,
-  Optional[Array[String[1]]]      $dns_cname             = undef,
-  Variant[Boolean, Enum['extra']] $log_queries           = false,
-  Boolean                         $log_dhcp              = false,
-  Optional[Array[String[1]]]      $dhcp_name_match       = undef,
-  Optional[String[1]]             $dhcp_ignore_names     = undef,
+  Optional[Array[String[1]]]            $mx_host               = undef,
+  Optional[String[1]]                   $mx_target             = undef,
+  Boolean                               $localmx               = false,
+  Boolean                               $selfmx                = false,
+  Optional[Array[String[1]]]            $dns_srv_host          = undef,
+  Optional[String[1]]                   $ptr_record            = undef,
+  Optional[Array[String[1]]]            $txt_record            = undef,
+  Optional[Array[String[1]]]            $dns_cname             = undef,
+  Variant[Boolean, Enum['extra']]       $log_queries           = false,
+  Boolean                               $log_dhcp              = false,
+  Optional[Array[String[1]]]            $dhcp_name_match       = undef,
+  Optional[String[1]]                   $dhcp_ignore_names     = undef,
 ) {
 
   include ::dnsmasq

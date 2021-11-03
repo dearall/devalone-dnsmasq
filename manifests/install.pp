@@ -1,6 +1,6 @@
-# @summary A short summary of the purpose of this class
+# @summary Install dnsmasq package
 #
-# A description of what this class does
+# This class use the dnsmasq params to install or uninstall the dnsmasq package, and manage the config dir.
 #
 # @example
 #   include dnsmasq::install

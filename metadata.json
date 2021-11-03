@@ -2,7 +2,7 @@
   "name": "devalone-dnsmasq",
   "version": "1.0.0",
   "author": "devalone",
-  "summary": "Installs, configures, and manages the dnsmasq service.",
+  "summary": "Manage dnsmasq package install, service, and config file details.",
   "license": "Apache-2.0",
   "source": "https://github.com/dearall/devalone-dnsmasq.git",
   "project_page": "https://github.com/devalone/devalone-dnsmasq",
