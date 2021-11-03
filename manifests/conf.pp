@@ -18,12 +18,12 @@
 # @param ensure
 #   Whether the config file should exist. Possible values are present, absent, and file.
 #
-#   Default value: 'present'
+#   Default value: `'present'`
 #
 # @param priority
 #   The priority of file in /etc/dnsmasq.d/ directory, which is part of the configuration file name.
 #
-#   Default value: 10
+#   Default value: `10`
 #
 # @param source
 #   A source file, which will be copied into the configuration file. If this attribute is not `undef`, the
@@ -35,20 +35,20 @@
 #     - `file`: URIs, which behave the same as local file paths.
 #     - `http(s)`: URIs, which point to files served by common web servers.
 #
-#   Default value: undef
+#   Default value: `undef`
 #
 # @param port
 #   Listen on this specific port instead of the standard DNS port (53). Setting this to zero completely disables
 #   DNS function, leaving only DHCP and/or TFTP.
 #
-#   Default value: undef
+#   Default value: `undef`
 #
 # @param user
 #   Specify the userid  to which dnsmasq will change after startup. Dnsmasq must normally be started as root, 
 #   but it will drop root privileges after startup by changing id to another user. Normally this user is "dnsmasq"
 #   but that can be over-ridden with this switch.
 #
-#   Default value: undef
+#   Default value: `undef`
 #
 # @param group
 #   Specify the group which dnsmasq will run as. The default is "dnsmasq".
