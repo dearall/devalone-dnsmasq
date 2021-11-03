@@ -41,8 +41,6 @@
 #   Listen on this specific port instead of the standard DNS port (53). Setting this to zero completely disables
 #   DNS function, leaving only DHCP and/or TFTP.
 #
-#   Default value: `undef`
-#
 # @param user
 #   Specify the userid  to which dnsmasq will change after startup. Dnsmasq must normally be started as root, 
 #   but it will drop root privileges after startup by changing id to another user. Normally this user is "dnsmasq"
