@@ -6,7 +6,13 @@
 #   include dnsmasq::params
 class dnsmasq::params {
     case $::osfamily {
-    'Debian': {
+    'Archlinux': {
+      $package_name = 'dnsmasq'
+      $service_name = 'dnsmasq'
+      $config_file = '/etc/dnsmasq.conf'
+      $config_dir = '/etc/dnsmasq.d/'
+    }
+     'Debian': {
       $package_name = 'dnsmasq'
       $service_name = 'dnsmasq'
       $config_file = '/etc/dnsmasq.conf'
