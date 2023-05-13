@@ -53,6 +53,9 @@
 #   rather than being forwarded upstream. The set of prefixes affected is the list given in RFC6303,
 #   for IPv4 and IPv6. 
 #
+# @param conf-file
+#   The conf-file parameter is used to specify additional configuration files to include in the dnsmasq configuration.
+#
 # @param dnssec
 #   Enable DNSSEC validation and caching.
 #
@@ -1121,6 +1124,7 @@ define dnsmasq::conf (
   Optional[String[1]]                   $group                 = undef,
   Boolean                               $domain_needed         = true,
   Boolean                               $bogus_priv            = true,
+  Optional[String[1]]                   $conf_file             = undef,
   Boolean                               $dnssec                = false,
   Boolean                               $dnssec_check_unsigned = false,
   Boolean                               $filterwin2k           = false,

@@ -32,7 +32,12 @@ bogus-priv
 
 # Uncomment these to enable DNSSEC validation and caching:
 # (Requires dnsmasq to be built with DNSSEC option.)
+<% if @conf_file -%>
+conf-file=<%= @conf_file  %>
+<%- else -%>
 #conf-file=%%PREFIX%%/share/dnsmasq/trust-anchors.conf
+<%- end -%>
+
 <% if @dnssec -%>
 dnssec
 <%- else -%>
